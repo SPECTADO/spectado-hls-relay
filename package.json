@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "start": "nodemon src/index.js",
+    "build": "docker build . -t spectado/spectado-hls-relay --platform linux/amd64",
     "ffmpeg:macos": "ffbinaries ffmpeg --platform=mac --output=./bin",
     "ffmpeg:linux": "ffbinaries ffmpeg --platform=linux-64 --output=./bin",
     "ffmpeg:win": "ffbinaries ffmpeg --platform=windows-64 --output=./bin"
