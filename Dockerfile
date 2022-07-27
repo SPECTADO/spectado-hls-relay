@@ -27,4 +27,4 @@ ENV STREAM_SOURCE="https://api-livesport.play.cz/edgeStreams"
 
 EXPOSE 8080 8443
 
-CMD ["node","index.js"]
+CMD ["node","src/index.js"]
