@@ -1,0 +1,6 @@
+node_modules
+.dccache
+bin
+debug
+.env
+__src

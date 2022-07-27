@@ -1,0 +1,24 @@
+{
+  "name": "spectado-hls-relay",
+  "version": "1.0.0",
+  "main": "src/index.js",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "start": "nodemon src/index.js",
+    "ffmpeg:macos": "ffbinaries ffmpeg --platform=mac --output=./bin",
+    "ffmpeg:linux": "ffbinaries ffmpeg --platform=linux-64 --output=./bin",
+    "ffmpeg:win": "ffbinaries ffmpeg --platform=windows-64 --output=./bin"
+  },
+  "dependencies": {
+    "chalk": "^5.0.1",
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "node-fetch": "^3.2.9",
+    "ws": "^8.8.1"
+  },
+  "devDependencies": {
+    "ffbinaries": "^1.1.4",
+    "nodemon": "^2.0.19"
+  }
+}
