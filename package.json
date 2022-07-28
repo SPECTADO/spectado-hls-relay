@@ -1,9 +1,11 @@
 {
   "name": "spectado-hls-relay",
   "version": "1.0.0",
-  "main": "src/index.js",
+  "description": "Simple HLS audio relay server",
   "license": "MIT",
+  "author": "SPECTADO, s.r.o.",
   "type": "module",
+  "main": "src/index.js",
   "scripts": {
     "start": "nodemon src/index.js --ignore 'debug/*'",
     "debug": "serve -l 8888",
@@ -24,5 +26,12 @@
     "ffbinaries": "^1.1.4",
     "nodemon": "^2.0.19",
     "serve": "^14.0.1"
-  }
+  },
+  "keywords": [
+    "hls",
+    "relay",
+    "audio",
+    "live",
+    "stream"
+  ]
 }
