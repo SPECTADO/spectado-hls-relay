@@ -83,7 +83,7 @@ docker run \
 --name spectado-hls-relay \
 --mount type=tmpfs,destination=/tmp,tmpfs-size=2048m \
 --env HTTP_PORT=8080 \
---env TEMP=/tmp \
+--env TEMP=/tmp/hls \
 --env STREAM_SOURCE=https://exemple.com/sources.json \
 spectado/spectado-hls-relay
 ```
@@ -110,7 +110,7 @@ docker run \
 --env HTTPS_PORT=8443 \
 --env HTTPS_CERT=/etc/letsencrypt/live/edge/fullchain.pem \
 --env HTTPS_CERT_KEY=/etc/letsencrypt/live/edge/privkey.pem \
---env TEMP=/tmp \
+--env TEMP=/tmp/hls \
 --env STREAM_SOURCE=https://exemple.com/sources.json \
 spectado/spectado-hls-relay
 ```
