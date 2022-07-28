@@ -4,8 +4,7 @@ const env = process.env;
 
 const config = {
   http: {
-    port: env.HTTP_PORT,
-    allow_origin: "*",
+    port: env.HTTP_PORT || 8080,
   },
 
   https: env.HTTPS_PORT && {
@@ -14,18 +13,18 @@ const config = {
     cert: env.HTTPS_CERT,
   },
 
-  ffmpeg: env.FFMPEGBIN,
-  streamSource: env.STREAM_SOURCE,
+  ffmpeg: env.FFMPEGBIN || "ffmpeg",
+  streamSource: env.STREAM_SOURCE || "./sources.json",
 
   codec: {
     type: "aac",
-    bitrate: 32,
+    bitrate: "32k",
     channels: 1,
     sampleRate: 44100,
   },
 
   hls: {
-    root: env.MEDIAROOT,
+    root: env.MEDIAROOT || "/tmp",
     hlsTime: 3,
     hlsListSize: 2,
     hlsStartNumberSource: "datetime",

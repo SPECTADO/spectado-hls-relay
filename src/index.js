@@ -6,8 +6,8 @@ import config from "./config.js";
 import Logger from "./Logger.js";
 import filesCleanup from "./workers/filesCleanup.js";
 import configFetch from "./workers/configFetch.js";
-import FfmpegManager from "./ffmpeg-manager.js";
 import SessionManager from "./session-manager.js";
+import routes from "./routes.js";
 
 // GLOBAL var
 global.sessions = new SessionManager();
@@ -24,7 +24,6 @@ Logger.log("------------------------------------------------");
 Logger.log("Starting the server...");
 
 const server = express();
-//server.listen(config.http.port);
 http.createServer(server).listen(config.http.port);
 Logger.log(`HTTP  listening on port ${config.http.port}`);
 
@@ -45,5 +44,8 @@ filesCleanup();
 
 Logger.log(`Started config fetch worker - path: ${config.streamSource}`);
 configFetch();
+
+// init express web routes
+server.use("/", routes);
 
 //  setInterval(() => {Logger.debug({ sessions: global.sessions.getAll() });}, 5000);

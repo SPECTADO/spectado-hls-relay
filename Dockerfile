@@ -23,7 +23,7 @@ ENV HTTPS_PORT=
 ENV HTTPS_CERT="/tmp-cert/fullchain.pem"
 ENV HTTPS_CERT_KEY="/tmp-cert/privkey.pem"
 ENV TEMP="/tmp"
-ENV STREAM_SOURCE="https://api-livesport.play.cz/edgeStreams"
+ENV STREAM_SOURCE="https://domain.tld/sources.json"
 
 EXPOSE 8080 8443
 

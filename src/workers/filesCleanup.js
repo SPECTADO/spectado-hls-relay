@@ -3,14 +3,13 @@ import Logger from "../Logger.js";
 import config from "../config.js";
 
 const scanAndClean = (mediaRoot, isStartup) => {
-  Logger.info("Cleaning folder " + mediaRoot);
   const now = new Date().getTime();
 
   fs.readdir(`${mediaRoot}`, function (err, dirs) {
     if (!err) {
       dirs.forEach((dirname) => {
         if (isStartup) {
-          Logger.info("Removing the temp folder > " + dirname);
+          Logger.debug("Removing the temp folder > " + dirname);
           fs.rmSync(`${mediaRoot}/${dirname}`, {
             recursive: true,
             force: true,
@@ -21,18 +20,20 @@ const scanAndClean = (mediaRoot, isStartup) => {
           fs.readdir(`${mediaRoot}/${dirname}`, function (err, files) {
             if (!err) {
               files.forEach((filename) => {
-                const ftime = fs
-                  .statSync(`${mediaRoot}/${dirname}/${filename}`)
-                  .mtime.getTime();
+                if (filename !== "init.mp4") {
+                  const ftime = fs
+                    .statSync(`${mediaRoot}/${dirname}/${filename}`)
+                    .mtime.getTime();
 
-                if (now - ftime > 60000) {
-                  Logger.info(
-                    `Delete stale file from > "${dirname}" > ${filename}`
-                  );
-                  fs.unlinkSync(`${mediaRoot}/${dirname}/${filename}`, {
-                    recursive: true,
-                    force: true,
-                  });
+                  if (now - ftime > 300000) {
+                    Logger.debug(
+                      `Delete stale file from > "${dirname}" > ${filename}`
+                    );
+                    fs.unlinkSync(`${mediaRoot}/${dirname}/${filename}`, {
+                      recursive: true,
+                      force: true,
+                    });
+                  }
                 }
               });
             }
@@ -46,12 +47,12 @@ const scanAndClean = (mediaRoot, isStartup) => {
 const filesCleanup = () => {
   const mediaRoot = config.hls.root;
   setInterval(() => {
-    scanAndClean(mediaRoot);
+    scanAndClean(mediaRoot, false);
   }, 60000 * 5);
 
   setTimeout(() => {
     scanAndClean(mediaRoot, true);
-  }, 100);
+  }, 50);
 };
 
 export default filesCleanup;
