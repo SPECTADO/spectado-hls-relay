@@ -2,6 +2,14 @@
 
 This simple server will fetch any remote or local audio file and will transcode it to live HLS stream. You can even use live stream as a source, making this server for example live HLS transcoder for Icecast server.
 
+The HLS Relay requires ffmpeg binary to be installed on the system. You can download binary using NPN or YARN. Refer the ENV values to setup path to ffmpeg.
+
+```bash
+npm run ffmpeg:linux
+npm run ffmpeg:win
+npm run ffmpeg:macos
+```
+
 ## Source config
 
 Configuring the sources is as easy as creating one JSON file. This config file is fetched from remote URL and must be hosted on HTTP or HTTPS server.
@@ -24,9 +32,25 @@ note: _local config option will be added later_
 This config file will produce 2 streams with urls:
 
 ```
-https://hls-server/live/stream-static/playlist.m3u8
-https://hls-server/live/stream-live/playlist.m3u8
+https://hls-server.tld/live/stream-static/playlist.m3u8
+https://hls-server.tld/live/stream-live/playlist.m3u8
 ```
+
+Server is build to allow dynamic source change with minimal interuptions for the listener.
+
+_This feature is still in development and may not work 100%_
+
+## ENV variables reference
+
+| variable      | default value                            |
+| ------------- | ---------------------------------------- |
+| HTTP_PORT     | 8080                                     |
+| HTTPS_PORT    |                                          |
+| HTTPS_CERT    | /etc/letsencrypt/live/edge/fullchain.pem |
+| HTTPS_KEY     | /etc/letsencrypt/live/edge/privkey.pem   |
+| FFMPEGBIN     | ffmpeg                                   |
+| MEDIAROOT     | /tmp/hls                                 |
+| STREAM_SOURCE | https://exemple.com/sources.json         |
 
 ## How to deploy
 
@@ -89,14 +113,3 @@ docker run \
 --env STREAM_SOURCE=https://exemple.com/sources.json \
 spectado/spectado-hls-relay
 ```
-
-## All ENV variables reference
-
-| variable       | default value                            |
-| -------------- | ---------------------------------------- |
-| HTTP_PORT      | 8080                                     |
-| HTTPS_PORT     |                                          |
-| HTTPS_CERT     | /etc/letsencrypt/live/edge/fullchain.pem |
-| HTTPS_CERT_KEY | /etc/letsencrypt/live/edge/privkey.pem   |
-| TEMP           | /tmp                                     |
-| STREAM_SOURCE  | https://exemple.com/sources.json         |
