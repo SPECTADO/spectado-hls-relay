@@ -2,6 +2,7 @@
 import fetch from "node-fetch";
 import Logger from "../Logger.js";
 import config from "../config.js";
+import FfmpegManager from "../ffmpeg-manager.js";
 
 const doFetchConfig = async () => {
   try {
@@ -9,9 +10,9 @@ const doFetchConfig = async () => {
     const streams = await response.json();
     const streamsIds = streams.reduce((ret, item) => [...ret, item.id], []);
 
-    const currentStreams = []; //TODO - read from global store...
+    const currentStreams = global.sessions.getAll();
     const currentStreamsIds = currentStreams.reduce(
-      (ret, item) => [...ret, item.name],
+      (ret, item) => [...ret, item.id],
       []
     );
 
@@ -22,28 +23,36 @@ const doFetchConfig = async () => {
     // Logger.log(streamsIds); Logger.log(currentStreamsIds); Logger.log(streamsToRemove);
 
     // Remove all streams that are no longer in the config file...
-    streamsToRemove.forEach((stream) => {
+    streamsToRemove.forEach((id) => {
       // remove the stream
-      Logger.info(`Removing old stream - ${stream}`);
-      // TODO: ...
+      Logger.info(`Removing old stream: ${id}`);
+      global.sessions.kill(id);
     });
 
     // find new / updated streams in config
     streams.forEach((stream) => {
       if (currentStreamsIds.includes(stream.id)) {
-        // update existing stream
-        // check if st6ream needs to be updated...
-        Logger.info(`Update stream - ${stream.id}`);
-        //TODO: ...
+        // update existing streams...
+
+        const session = global.sessions.get(stream.id);
+        if (stream.source !== session.config.source) {
+          Logger.info(`Update stream: ${stream.id} - ${stream.source}`);
+          global.sessions.kill(stream.id);
+          setTimeout(() => {
+            const newStream = new FfmpegManager(stream);
+            newStream.start();
+          }, 100);
+        }
       } else {
         // create a new stream
-        Logger.info(`New stream added - ${stream.id}`);
-        //TODO:...
+        Logger.info(`New stream added: ${stream.id} - ${stream.source}`);
+        const newStream = new FfmpegManager(stream);
+        newStream.start();
       }
     });
   } catch (err) {
-    Logger.error(`Error fetching remote config from ${streamConfig}`);
-    Logger.error(err);
+    Logger.error(`Error fetching remote config from ${config.streamSource}`);
+    Logger.debug(err);
   }
 };
 

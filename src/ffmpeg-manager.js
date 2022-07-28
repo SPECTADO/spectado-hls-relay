@@ -1,21 +1,38 @@
-import EventEmitter from "events";
+// import EventEmitter from "events";
 import { spawn } from "child_process";
 import Logger from "./Logger.js";
 import config from "./config.js";
+import mkdirp from "mkdirp";
 
-class FfmpegManager extends EventEmitter {
-  constructor(conf) {
-    super();
-    this.conf = conf;
+class FfmpegManager {
+  constructor(config) {
+    //super();
+    this.ffmpeg_exec = null;
+
+    this.config = config;
+    /* conf = {
+        id: <string>,
+        source: <string>
+    }
+    */
   }
 
   start() {
-    // TODO: ...
+    if (global.sessions.get(this.config.id) !== null) {
+      Logger.error(
+        `Can't start ffmpeg session - session with id "${this.config.id}" already exists!`
+      );
+      return false;
+    }
+
+    // create the HLS folder
+    const hlsPath = `${config.hls.root}/${this.config.id}`;
+    mkdirp.sync(hlsPath);
 
     let argv = [
       "-re",
       "-i",
-      "https://icecast-u1.play.cz/beat64.mp3",
+      this.config.source,
       "-c:a",
       "aac",
       "-ab",
@@ -40,10 +57,12 @@ class FfmpegManager extends EventEmitter {
       "delete_segments+omit_endlist+discont_start+append_list",
       "-var_stream_map",
       "a:0",
-      "/Volumes/tmp/test/playlist.m3u8",
+      `${hlsPath}/playlist.m3u8`,
     ];
 
     this.ffmpeg_exec = spawn(config.ffmpeg, argv);
+    Logger.debug(`Created ffmpeg process with id ${this.ffmpeg_exec.pid}`);
+    global.sessions.add(this);
 
     this.ffmpeg_exec.on("error", (e) => {
       Logger.error(e);
@@ -58,13 +77,23 @@ class FfmpegManager extends EventEmitter {
     });
 
     this.ffmpeg_exec.on("close", (code) => {
-      Logger.info(`Transmuxing end ${code}`);
-      this.emit("end");
+      Logger.debug(`Transmuxing end ${code}`);
+
+      // code 255 = clean exit - killed by manager
+      if (code !== 255) {
+        global.sessions.kill(this.config.id);
+      }
     });
   }
 
   end() {
-    this.ffmpeg_exec.kill();
+    return new Promise((resolve, _reject) => {
+      try {
+        this.ffmpeg_exec.kill();
+      } catch {}
+      Logger.debug("Killing ffmpeg process", this.ffmpeg_exec.pid);
+      resolve();
+    });
   }
 }
 

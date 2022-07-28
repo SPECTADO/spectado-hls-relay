@@ -6,8 +6,11 @@ import config from "./config.js";
 import Logger from "./Logger.js";
 import filesCleanup from "./workers/filesCleanup.js";
 import configFetch from "./workers/configFetch.js";
-
 import FfmpegManager from "./ffmpeg-manager.js";
+import SessionManager from "./session-manager.js";
+
+// GLOBAL var
+global.sessions = new SessionManager();
 
 Logger.log("                        ");
 Logger.log("██╗  ██╗██╗     ███████╗");
@@ -40,9 +43,7 @@ Logger.log(`FFMPEG binary path ${config.ffmpeg}`);
 Logger.log(`Started cleanup worker - path: ${config.hls.root}`);
 filesCleanup();
 
-//Logger.log(`Started config fetch worker - path: ${config.streamSource}`); configFetch();
+Logger.log(`Started config fetch worker - path: ${config.streamSource}`);
+configFetch();
 
-/*
-const xxx = new FfmpegManager();
-xxx.start();
-*/
+//  setInterval(() => {Logger.debug({ sessions: global.sessions.getAll() });}, 5000);

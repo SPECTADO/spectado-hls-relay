@@ -5,7 +5,8 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
-    "start": "nodemon src/index.js",
+    "start": "nodemon src/index.js --ignore 'debug/*'",
+    "debug": "serve -l 8888",
     "build": "docker build . -t spectado/spectado-hls-relay --platform linux/amd64",
     "ffmpeg:macos": "ffbinaries ffmpeg --platform=mac --output=./bin",
     "ffmpeg:linux": "ffbinaries ffmpeg --platform=linux-64 --output=./bin",
@@ -15,11 +16,13 @@
     "chalk": "^5.0.1",
     "dotenv": "^16.0.1",
     "express": "^4.18.1",
+    "mkdirp": "^1.0.4",
     "node-fetch": "^3.2.9",
     "ws": "^8.8.1"
   },
   "devDependencies": {
     "ffbinaries": "^1.1.4",
-    "nodemon": "^2.0.19"
+    "nodemon": "^2.0.19",
+    "serve": "^14.0.1"
   }
 }
