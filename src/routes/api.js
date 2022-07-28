@@ -1,5 +1,6 @@
 import express from "express";
 import serverInfo from "../api/serverInfo.js";
+import streamsInfo from "../api/streamsInfo.js";
 
 const router = express.Router();
 
@@ -9,6 +10,10 @@ router.get("/", (_req, res) => {
 
 router.route("/info").get((_req, res) => {
   res.json(serverInfo());
+});
+
+router.route("/streams").get((req, res) => {
+  res.json(streamsInfo(req));
 });
 
 export default router;

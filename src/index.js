@@ -46,6 +46,8 @@ Logger.log(`Started config fetch worker - path: ${config.streamSource}`);
 configFetch();
 
 // init express web routes
+server.set("view engine", "ejs");
+server.set("views", "./src/views/");
 server.use("/", routes);
 
 //  setInterval(() => {Logger.debug({ sessions: global.sessions.getAll() });}, 5000);

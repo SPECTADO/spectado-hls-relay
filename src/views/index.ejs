@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js"></script>
+    <title>spectado-hls-relay</title>
+  </head>
+  <body>
+    <section>
+      <h1 class="mt-1 text-3xl text-center font-bold underline">
+        SPECTADO-HLS-RELAY
+      </h1>
+
+      <div class="mt-5 mx-5 mb-20">
+        <table
+          class="w-full text-sm text-left text-gray-500 dark:text-gray-400"
+        >
+          <thead
+            class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
+          >
+            <tr>
+              <th>ID</th>
+              <th>Link</th>
+              <th>Started</th>
+              <th>&nbsp;</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% for(var i = 0; i < streams.length; i++) { %>
+            <tr
+              class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+            >
+              <td><%= streams[i]["id"] %></td>
+              <td><%= streams[i]["link"] %></td>
+              <td><%= streams[i]["started"] %></td>
+              <td>
+                <button  type="button" onClick="play('<%= streams[i]["link"] %>')" class="py-2 px-4 bg-blue-500 text-white text-xs font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75">
+                  PLAY
+                </button> 
+              </td>
+            </tr>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <div class="fixed bottom-0 right-0">
+      <audio id="player" controls autoplay></audio>
+    </div>
+
+    <script>
+        function play(mediaSrc) {
+          const elmPlayer = document.getElementById("player");
+          if (Hls.isSupported()) {
+            var hls = new Hls();
+            hls.loadSource(mediaSrc);
+            hls.attachMedia(elmPlayer);
+          }
+        }
+      </script>
+  </body>
+</html>

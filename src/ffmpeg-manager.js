@@ -4,17 +4,19 @@ import Logger from "./Logger.js";
 import config from "./config.js";
 import mkdirp from "mkdirp";
 
+/**
+ * config object
+ * {
+ *    id: <string>,
+ *    source: <string>
+ * }
+ */
 class FfmpegManager {
   constructor(config) {
     //super();
     this.ffmpeg_exec = null;
-
+    this.started = new Date();
     this.config = config;
-    /* conf = {
-        id: <string>,
-        source: <string>
-    }
-    */
   }
 
   start() {
