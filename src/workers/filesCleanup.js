@@ -2,7 +2,7 @@ import fs from "fs";
 import Logger from "../Logger.js";
 import config from "../config.js";
 
-const fileLifetime = 2; //minutes
+const fileLifetime = 1; //minutes
 
 const scanAndClean = (mediaRoot, isStartup) => {
   const now = new Date().getTime();

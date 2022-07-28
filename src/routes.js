@@ -1,17 +1,19 @@
 import express from "express";
 import fs from "fs";
+import config from "./config.js";
 import routesBasic from "./routes/basic.js";
 import routesApi from "./routes/api.js";
-import config from "./config.js";
-import Logger from "./Logger.js";
+import routesLive from "./routes/live.js";
+
+// import Logger from "./Logger.js";
 
 const router = express.Router();
 
 router.use("/", routesBasic);
 router.use("/api", routesApi);
+router.use("/live", routesLive);
 
 router.use("/player", express.static("public"));
-router.use("/live", express.static(config.hls.root));
 
 router.all("*", (req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");

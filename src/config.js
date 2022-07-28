@@ -26,10 +26,8 @@ const config = {
 
   hls: {
     root: env.MEDIAROOT || "/tmp/hls",
-    hlsTime: 3,
-    hlsListSize: 2,
-    hlsStartNumberSource: "datetime",
-    hlsFlags: "delete_segments+omit_endlist+discont_start+append_list",
+    hlsTime: 5,
+    hlsListSize: 4,
   },
 };
 
