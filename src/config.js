@@ -3,6 +3,10 @@ dotenv.config();
 const env = process.env;
 
 const config = {
+  ffmpeg: env.FFMPEGBIN || "ffmpeg",
+  streamSource: env.STREAM_SOURCE || "./sources.json",
+  logLevel: env.LOGLEVEL || "WARNING",
+
   http: {
     port: env.HTTP_PORT || 8080,
   },
@@ -12,9 +16,6 @@ const config = {
     key: env.HTTPS_KEY,
     cert: env.HTTPS_CERT,
   },
-
-  ffmpeg: env.FFMPEGBIN || "ffmpeg",
-  streamSource: env.STREAM_SOURCE || "./sources.json",
 
   codec: {
     type: "aac",

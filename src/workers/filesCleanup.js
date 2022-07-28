@@ -2,6 +2,8 @@ import fs from "fs";
 import Logger from "../Logger.js";
 import config from "../config.js";
 
+const fileLifetime = 1; //minutes
+
 const scanAndClean = (mediaRoot, isStartup) => {
   const now = new Date().getTime();
 
@@ -25,7 +27,7 @@ const scanAndClean = (mediaRoot, isStartup) => {
                     .statSync(`${mediaRoot}/${dirname}/${filename}`)
                     .mtime.getTime();
 
-                  if (now - ftime > 300000) {
+                  if (now - ftime > fileLifetime * 1000) {
                     Logger.debug(
                       `Delete stale file from > "${dirname}" > ${filename}`
                     );
@@ -48,7 +50,7 @@ const filesCleanup = () => {
   const mediaRoot = config.hls.root;
   setInterval(() => {
     scanAndClean(mediaRoot, false);
-  }, 60000 * 5);
+  }, 60000);
 
   setTimeout(() => {
     scanAndClean(mediaRoot, true);

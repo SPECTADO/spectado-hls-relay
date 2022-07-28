@@ -51,6 +51,7 @@ _This feature is still in development and may not work 100%_
 | FFMPEGBIN     | ffmpeg                                   |
 | MEDIAROOT     | /tmp/hls                                 |
 | STREAM_SOURCE | https://exemple.com/sources.json         |
+| LOGLEVEL      | WARNING                                  |
 
 ## How to deploy
 

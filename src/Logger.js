@@ -1,5 +1,5 @@
-//const chalk = require("chalk");
 import chalk from "chalk";
+import config from "./config.js";
 
 const LOG_TYPES = {
   NONE: 0,
@@ -9,7 +9,7 @@ const LOG_TYPES = {
   DEBUG: 4,
   FFDEBUG: 5,
 };
-const logType = LOG_TYPES.DEBUG;
+const logType = LOG_TYPES[config.logLevel] || LOG_TYPES.WARNING;
 
 const logTime = () => {
   let nowDate = new Date();

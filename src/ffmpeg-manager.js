@@ -47,6 +47,8 @@ class FfmpegManager {
       "fmp4",
       "-segment_list_flags",
       "live",
+      "-hls_playlist_type",
+      "event",
       "-hls_time",
       config.hls.hlsTime,
       "-hls_list_size",
