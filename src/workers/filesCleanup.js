@@ -22,7 +22,7 @@ const scanAndClean = (mediaRoot, isStartup) => {
           fs.readdir(`${mediaRoot}/${dirname}`, function (err, files) {
             if (!err) {
               files.forEach((filename) => {
-                if (filename !== "init.mp4") {
+                if (filename !== "init.mp4" && filename !== "playlist.m3u8") {
                   const ftime = fs
                     .statSync(`${mediaRoot}/${dirname}/${filename}`)
                     .mtime.getTime();
