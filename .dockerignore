@@ -1,7 +1,6 @@
 node_modules
 npm-debug.log
-debug
-bin
+_temp
 .dccache
 */.DS_Store
 */**/.DS_Store

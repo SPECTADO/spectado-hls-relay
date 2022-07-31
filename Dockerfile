@@ -13,8 +13,6 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 
 RUN npm i
-RUN mkdir ./bin
-RUN npm run ffmpeg:linux
 
 COPY . .
 
@@ -22,7 +20,8 @@ ENV HTTP_PORT=8080
 ENV HTTPS_PORT=
 ENV HTTPS_CERT="/tmp-cert/fullchain.pem"
 ENV HTTPS_CERT_KEY="/tmp-cert/privkey.pem"
-ENV TEMP="/tmp"
+ENV FFMPEGBIN="./bin/ffmpeg"
+ENV MEDIAROOT="/tmp/hls"
 ENV STREAM_SOURCE="https://domain.tld/sources.json"
 
 EXPOSE 8080 8443

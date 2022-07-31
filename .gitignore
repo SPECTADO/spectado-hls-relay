@@ -1,6 +1,5 @@
 node_modules
-bin
-debug
+_temp
 .env
 .dccache
 __src
