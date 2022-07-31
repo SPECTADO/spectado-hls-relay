@@ -16,13 +16,17 @@ RUN npm i
 
 COPY . .
 
-ENV HTTP_PORT=8080
-ENV HTTPS_PORT=
-ENV HTTPS_CERT="/tmp-cert/fullchain.pem"
-ENV HTTPS_CERT_KEY="/tmp-cert/privkey.pem"
-ENV FFMPEGBIN="./bin/ffmpeg"
-ENV MEDIAROOT="/tmp/hls"
-ENV STREAM_SOURCE="https://domain.tld/sources.json"
+ENV SHLS_HTTP_PORT=8080
+ENV SHLS_HTTPS_PORT=
+ENV SHLS_HTTPS_CERT="/tmp-cert/fullchain.pem"
+ENV SHLS_HTTPS_CERT_KEY="/tmp-cert/privkey.pem"
+ENV SHLS_FFMPEGBIN="./bin/ffmpeg"
+ENV SHLS_MEDIAROOT="/tmp/hls"
+ENV SHLS_CODEC="aac"
+ENV SHLS_BITRATE="64k"
+ENV SHLS_CHANNELS=2
+ENV SHLS_SAMPLERATE=44100
+ENV SHLS_STREAM_SOURCE="https://domain.tld/sources.json"
 
 EXPOSE 8080 8443
 

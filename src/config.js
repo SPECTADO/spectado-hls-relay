@@ -3,29 +3,29 @@ dotenv.config();
 const env = process.env;
 
 const config = {
-  ffmpeg: env.FFMPEGBIN || "ffmpeg",
-  streamSource: env.STREAM_SOURCE || "./sources.json",
-  logLevel: env.LOGLEVEL || "WARNING",
+  ffmpeg: env.SHLS_FFMPEGBIN || "ffmpeg",
+  streamSource: env.SHLS_STREAM_SOURCE || "./sources.json",
+  logLevel: env.SHLS_LOGLEVEL || "WARNING",
 
   http: {
-    port: env.HTTP_PORT || 8080,
+    port: env.SHLS_HTTP_PORT || 8080,
   },
 
-  https: env.HTTPS_PORT && {
-    port: env.HTTPS_PORT,
-    key: env.HTTPS_KEY,
-    cert: env.HTTPS_CERT,
+  https: env.SHLS_HTTPS_PORT && {
+    port: env.SHLS_HTTPS_PORT,
+    key: env.SHLS_HTTPS_KEY,
+    cert: env.SHLS_HTTPS_CERT,
   },
 
   codec: {
-    type: "aac",
-    bitrate: "32k",
-    channels: 1,
-    sampleRate: 44100,
+    type: env.SHLS_CODEC || "aac",
+    bitrate: env.SHLS_BITRATE || "64k",
+    channels: env.SHLS_CHANNELS || 2,
+    sampleRate: env.SHLS_SAMPLERATE || 44100,
   },
 
   hls: {
-    root: env.MEDIAROOT || "/tmp/hls",
+    root: env.SHLS_MEDIAROOT || "/tmp/hls",
     hlsTime: 5,
     hlsListSize: 4,
   },

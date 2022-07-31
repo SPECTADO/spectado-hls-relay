@@ -42,16 +42,20 @@ _This feature is still in development and may not work 100%_
 
 ## ENV variables reference
 
-| variable      | default value                            |
-| ------------- | ---------------------------------------- |
-| HTTP_PORT     | 8080                                     |
-| HTTPS_PORT    |                                          |
-| HTTPS_CERT    | /etc/letsencrypt/live/edge/fullchain.pem |
-| HTTPS_KEY     | /etc/letsencrypt/live/edge/privkey.pem   |
-| FFMPEGBIN     | ffmpeg                                   |
-| MEDIAROOT     | /tmp/hls                                 |
-| STREAM_SOURCE | https://exemple.com/sources.json         |
-| LOGLEVEL      | WARNING                                  |
+| variable           | default value                            |
+| ------------------ | ---------------------------------------- |
+| SHLS_HTTP_PORT     | 8080                                     |
+| SHLS_HTTPS_PORT    |                                          |
+| SHLS_HTTPS_CERT    | /etc/letsencrypt/live/edge/fullchain.pem |
+| SHLS_HTTPS_KEY     | /etc/letsencrypt/live/edge/privkey.pem   |
+| SHLS_FFMPEGBIN     | ffmpeg                                   |
+| SHLS_MEDIAROOT     | /tmp/hls                                 |
+| SHLS_CODEC         | aac                                      |
+| SHLS_BITRATE       | 64k                                      |
+| SHLS_CHANNELS      | 2                                        |
+| SHLS_SAMPLERATE    | 44100                                    |
+| SHLS_STREAM_SOURCE | https://exemple.com/sources.json         |
+| SHLS_LOGLEVEL      | WARNING                                  |
 
 ## How to deploy
 
@@ -82,10 +86,10 @@ docker run \
 -p 80:8080 \
 --name spectado-hls-relay \
 --mount type=tmpfs,destination=/tmp,tmpfs-size=2048m \
---env HTTP_PORT=8080 \
---env MEDIAROOT=/tmp/hls \
---env FFMPEGBIN=ffmpeg \
---env STREAM_SOURCE=https://exemple.com/sources.json \
+--env SHLS_HTTP_PORT=8080 \
+--env SHLS_MEDIAROOT=/tmp/hls \
+--env SHLS_FFMPEGBIN=ffmpeg \
+--env SHLS_STREAM_SOURCE=https://exemple.com/sources.json \
 spectado/spectado-hls-relay
 ```
 
@@ -107,12 +111,12 @@ docker run \
 --name spectado-hls-relay \
 --mount type=tmpfs,destination=/tmp,tmpfs-size=2048m \
 -v /etc/letsencrypt:/etc/letsencrypt \
---env HTTP_PORT=8080 \
---env HTTPS_PORT=8443 \
---env HTTPS_CERT=/etc/letsencrypt/live/edge/fullchain.pem \
---env HTTPS_CERT_KEY=/etc/letsencrypt/live/edge/privkey.pem \
---env MEDIAROOT=/tmp/hls \
---env FFMPEGBIN=ffmpeg \
---env STREAM_SOURCE=https://exemple.com/sources.json \
+--env SHLS_HTTP_PORT=8080 \
+--env SHLS_HTTPS_PORT=8443 \
+--env SHLS_HTTPS_CERT=/etc/letsencrypt/live/edge/fullchain.pem \
+--env SHLS_HTTPS_CERT_KEY=/etc/letsencrypt/live/edge/privkey.pem \
+--env SHLS_MEDIAROOT=/tmp/hls \
+--env SHLS_FFMPEGBIN=ffmpeg \
+--env SHLS_STREAM_SOURCE=https://exemple.com/sources.json \
 spectado/spectado-hls-relay
 ```
