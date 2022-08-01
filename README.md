@@ -2,6 +2,7 @@
 
 ![GitHub package.json version](https://img.shields.io/github/package-json/v/spectado/spectado-hls-relay?style=for-the-badge)
 ![GitHub last commit (branch)](https://img.shields.io/github/last-commit/spectado/spectado-hls-relay/main?style=for-the-badge)
+
 ![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/spectado/spectado-hls-relay?style=for-the-badge)
 ![Docker Image Version (tag latest semver)](https://img.shields.io/docker/v/spectado/spectado-hls-relay/latest?style=for-the-badge)
 ![Docker Image Size (latest by date)](https://img.shields.io/docker/image-size/spectado/spectado-hls-relay?style=for-the-badge)
@@ -101,7 +102,7 @@ spectado/spectado-hls-relay
 
 This server can run on both HTTP and HTTPS. If you want to run with HTTPS enabled, you need to specify port number for HTTPS and also SSL certificates location.
 
-Defautl mapping for docker is `/etc/letsencrypt` folder, so you can generate and store the cert on your server
+Default mapping for docker is `/etc/letsencrypt` folder, so you can generate and store the cert on your server
 
 ```bash
 certbot certonly --standalone --cert-name=edge --agree-tos
