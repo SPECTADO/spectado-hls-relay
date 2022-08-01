@@ -20,6 +20,7 @@ class SessionManager extends EventEmitter {
     Logger.info(`stream-added event ${id}`);
     this.activeSessions.push({
       id,
+      name: ffmpegManager.config.name,
       config: ffmpegManager.config,
       ref: ffmpegManager,
     });

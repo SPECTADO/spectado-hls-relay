@@ -3,6 +3,7 @@ import { spawn } from "child_process";
 import Logger from "./Logger.js";
 import config from "./config.js";
 import mkdirp from "mkdirp";
+import fs from "fs";
 
 /**
  * config object
@@ -30,6 +31,9 @@ class FfmpegManager {
     // create the HLS folder
     const hlsPath = `${config.hls.root}/${this.config.id}`;
     mkdirp.sync(hlsPath);
+    try {
+      fs.closeSync(fs.openSync(`${hlsPath}/_lock`, "w"));
+    } catch {}
 
     let argv = [
       "-re",
@@ -59,7 +63,7 @@ class FfmpegManager {
       // "-hls_start_number_source", "datetime",
       // "-start_number","8",
       "-hls_segment_filename",
-      `${hlsPath}/%8d.m4s`,
+      `${hlsPath}/s%8d.m4s`,
       "-hls_flags",
       "delete_segments+omit_endlist+discont_start+append_list+program_date_time",
       `${hlsPath}/playlist.m3u8`,
@@ -74,20 +78,27 @@ class FfmpegManager {
     });
 
     this.ffmpeg_exec.stdout.on("data", (data) => {
-      Logger.ffdebug(`IDX - ${data}`);
+      Logger.ffdebug(`[${this.config.id}] - ${data}`);
     });
 
     this.ffmpeg_exec.stderr.on("data", (data) => {
-      Logger.ffdebug(`IDX - ${data}`);
+      Logger.ffdebug(`[${this.config.id}] - ${data}`);
     });
 
     this.ffmpeg_exec.on("close", (code) => {
-      Logger.debug(`Transmuxing end ${code}`);
+      try {
+        fs.unlinkSync(`${config.hls.root}/${this.config.id}/_lock`);
+      } catch {}
 
       // code 255 = clean exit - killed by manager
       if (code !== 255) {
         global.sessions.kill(this.config.id);
+        Logger.warn(
+          `Transmuxing of "${this.config.id}" ended with code ${code}`
+        );
+        return;
       }
+      Logger.debug(`Transmuxing of "${this.config.id}" ended. Code ${code}`);
     });
   }
 
@@ -96,7 +107,9 @@ class FfmpegManager {
       try {
         this.ffmpeg_exec.kill();
       } catch {}
-      Logger.debug("Killing ffmpeg process", this.ffmpeg_exec.pid);
+      Logger.debug(
+        `Killing ffmpeg process for "${this.config.id}" with PID of ${this.ffmpeg_exec.pid}`
+      );
       resolve();
     });
   }

@@ -8,6 +8,7 @@ const streamInfo = (req) => {
   return streams.map((item) => {
     return {
       id: item.id,
+      name: item.name ?? false,
       link: `${baseUrl}/live/${item.id}/playlist.m3u8`,
       pid: item.ref?.ffmpeg_exec?.pid,
       started: item.ref?.started,

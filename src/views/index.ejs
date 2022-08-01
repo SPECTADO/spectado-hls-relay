@@ -23,8 +23,8 @@
           >
             <tr>
               <th>ID</th>
+              <th>Name</th>
               <th>Link</th>
-              <th>Started</th>
               <th>&nbsp;</th>
             </tr>
           </thead>
@@ -34,8 +34,8 @@
               class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
             >
               <td><%= streams[i]["id"] %></td>
+              <td><%= streams[i]["name"] %></td>
               <td><%= streams[i]["link"] %></td>
-              <td><%= streams[i]["started"] %></td>
               <td>
                 <button  type="button" onClick="play('<%= streams[i]["link"] %>')" class="py-2 px-4 bg-blue-500 text-white text-xs font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75">
                   PLAY

@@ -1,13 +1,13 @@
 {
   "name": "spectado-hls-relay",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "Simple HLS audio relay server",
   "license": "MIT",
   "author": "SPECTADO, s.r.o.",
   "type": "module",
   "main": "src/index.js",
   "scripts": {
-    "start": "nodemon src/index.js --ignore 'debug/*'",
+    "start": "nodemon src/index.js --ignore '_temp/*'",
     "debug": "serve -l 8888",
     "build": "docker build . -t spectado/spectado-hls-relay --platform linux/amd64",
     "ffmpeg:macos": "ffbinaries ffmpeg --platform=mac --output=./_temp",

@@ -6,6 +6,7 @@ const config = {
   ffmpeg: env.SHLS_FFMPEGBIN || "ffmpeg",
   streamSource: env.SHLS_STREAM_SOURCE || "./sources.json",
   logLevel: env.SHLS_LOGLEVEL || "WARNING",
+  isDev: env.SHLS_DEV === "true" ? true : false,
 
   http: {
     port: env.SHLS_HTTP_PORT || 8080,
