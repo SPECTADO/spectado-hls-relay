@@ -1,5 +1,11 @@
 # SPECTADO HLS Relay server
 
+![GitHub package.json version](https://img.shields.io/github/package-json/v/spectado/spectado-hls-relay?style=for-the-badge)
+![GitHub last commit (branch)](https://img.shields.io/github/last-commit/spectado/spectado-hls-relay/main?style=for-the-badge)
+![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/spectado/spectado-hls-relay?style=for-the-badge)
+![Docker Image Version (tag latest semver)](https://img.shields.io/docker/v/spectado/spectado-hls-relay/latest?style=for-the-badge)
+![Docker Image Size (latest by date)](https://img.shields.io/docker/image-size/spectado/spectado-hls-relay?style=for-the-badge)
+
 This simple server will fetch any remote or local audio file and will transcode it to live HLS stream. You can even use live stream as a source, making this server for example live HLS transcoder for Icecast server.
 
 The HLS Relay requires ffmpeg binary to be installed on the system. You can download binary using NPN or YARN. Refer the ENV values to setup path to ffmpeg.
