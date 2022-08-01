@@ -7,13 +7,18 @@ const json = JSON.parse(
 );
 
 const serverInfo = () => {
+  const cpuLoad = os.loadavg();
+
   return {
     server: json.name,
     version: json.version,
+    load: cpuLoad[0], // change for TCP connections...
     memory: { free: os.freemem(), total: os.totalmem() },
     uptime: os.uptime(),
-    load: os.loadavg(),
-    arch: os.arch(),
+    cpu: {
+      load: cpuLoad,
+      arch: os.arch(),
+    },
     platform: os.platform(),
   };
 };
