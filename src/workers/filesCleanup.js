@@ -2,7 +2,8 @@ import fs from "fs";
 import Logger from "../Logger.js";
 import config from "../config.js";
 
-const fileLifetime = 1; //minutes
+const fileLifetime = 2; //minutes
+const fileLifetimeStale = 10; //minutes
 
 const scanAndClean = (mediaRoot) => {
   const now = new Date().getTime();
@@ -18,7 +19,7 @@ const scanAndClean = (mediaRoot) => {
               `${mediaRoot}/${dirname}/playlist.m3u8`
             );
 
-            if (now - playlistFile.mtime > 10 * fileLifetime * 60000) {
+            if (now - playlistFile.mtime > fileLifetimeStale * 60000) {
               Logger.debug("Removing the temp folder > " + dirname);
               try {
                 fs.rmSync(`${mediaRoot}/${dirname}`, {
