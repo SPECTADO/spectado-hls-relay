@@ -28,7 +28,7 @@ Logger.log("   SPECTADO HLS RELAY   ");
 Logger.log("------------------------------------------------");
 Logger.log(srvInfo.server);
 Logger.log(`version: ${srvInfo.version}`);
-Logger.log(`${srvInfo.platform} - ${srvInfo.arch}`);
+Logger.log(`${srvInfo.platform} - ${srvInfo.cpu.arch}`);
 Logger.log("------------------------------------------------");
 
 try {
