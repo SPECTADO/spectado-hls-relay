@@ -6,7 +6,7 @@ ARG VCS_REF
 LABEL org.label-schema.build-date="${BUILD_DATE}" \
     org.label-schema.name="spectado-hls-relay" \
     org.label-schema.vendor="SPECTADO" \
-    org.label-schema.version="1.0.0"
+    org.label-schema.version="1.0.2"
 
 WORKDIR /usr/src/app
 
