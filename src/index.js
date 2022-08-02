@@ -1,4 +1,7 @@
 import express from "express";
+import session from "express-session";
+import memorystore from "memorystore";
+import crypto from "crypto";
 import http from "http";
 import https from "https";
 import fs from "fs";
@@ -64,9 +67,41 @@ filesCleanup();
 Logger.log(`Started config fetch worker from source "${config.streamSource}"`);
 configFetch();
 
-// init express web routes
+// init express view engine - ejs
 server.set("view engine", "ejs");
 server.set("views", "./src/views/");
+
+// init express-session
+const MemoryStore = memorystore(session);
+
+server.use(
+  session({
+    secret: crypto.randomUUID(),
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: "auto" },
+    store: new MemoryStore({
+      checkPeriod: 900 * 1000, // prune expired entries every 900 seconds
+      ttl: 3600 * 4 * 1000,
+    }),
+  })
+);
+
+// init express web routes
 server.use("/", routes);
 
 //  setInterval(() => {Logger.debug({ sessions: global.sessions.getAll() });}, 5000);
+
+server.get("/foo", function (req, res, next) {
+  req.session.streamId = "xdDf";
+  console.log(req.sessionID);
+  console.log(
+    req.sessionStore.all((err, sess) => {
+      console.log({ err, sess });
+    })
+  );
+  console.log(req.sessionStore.store.length);
+  //console.log(req.sessionStore.all());
+
+  res.json(req.session);
+});
