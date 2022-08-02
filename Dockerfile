@@ -11,8 +11,10 @@ LABEL org.label-schema.build-date="${BUILD_DATE}" \
 WORKDIR /usr/src/app
 
 COPY package*.json ./
+COPY yarn.lock ./
 
-RUN npm i
+#RUN npm i
+RUN yarn install --frozen-lockfile 
 
 COPY . .
 
