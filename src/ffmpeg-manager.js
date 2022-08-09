@@ -36,6 +36,8 @@ class FfmpegManager {
     } catch {}
 
     let argv = [
+      "-stream_loop",
+      "-1",
       "-re",
       "-i",
       this.config.source,
