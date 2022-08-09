@@ -48,6 +48,7 @@ class SessionManager extends EventEmitter {
   removeRef(id) {
     Logger.debug(`Removing reference to ffmpeg manager with is ${id}`);
     this.activeSessions = this.activeSessions.filter((item) => item.id !== id);
+    global.listeners = global.listeners.filter((item) => item.id !== id);
     return true;
   }
 

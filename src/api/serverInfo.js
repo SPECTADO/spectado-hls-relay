@@ -8,11 +8,13 @@ const json = JSON.parse(
 
 const serverInfo = () => {
   const cpuLoad = os.loadavg();
+  let totalListeners = global?.listeners?.length ?? 0;
 
   return {
     server: json.name,
     version: json.version,
-    load: cpuLoad[0], // change for TCP connections...
+    load: 0,
+    listeners: totalListeners,
     memory: { free: os.freemem(), total: os.totalmem() },
     uptime: os.uptime(),
     cpu: {

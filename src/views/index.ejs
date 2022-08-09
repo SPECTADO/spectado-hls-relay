@@ -5,7 +5,6 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/hls.js"></script>
     <title>spectado-hls-relay</title>
   </head>
   <body>
@@ -24,6 +23,7 @@
             <tr>
               <th>ID</th>
               <th>Name</th>
+              <th>Listeners</th>
               <th>Link</th>
               <th>&nbsp;</th>
             </tr>
@@ -35,9 +35,10 @@
             >
               <td><%= streams[i]["id"] %></td>
               <td><%= streams[i]["name"] %></td>
+              <td><%= streams[i]["listeners"] %></td>
               <td><%= streams[i]["link"] %></td>
               <td>
-                <button  type="button" onClick="play('<%= streams[i]["link"] %>')" class="py-2 px-4 bg-blue-500 text-white text-xs font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75">
+                <button  type="button" onClick="play('<%= streams[i]["link"] %>','<%= streams[i]["id"] %>','<%= streams[i]["name"] %>')" class="py-2 px-4 bg-blue-500 text-white text-xs font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75">
                   PLAY
                 </button> 
               </td>
@@ -48,18 +49,20 @@
       </div>
     </section>
 
-    <div class="fixed bottom-0 right-0">
-      <audio id="player" controls autoplay></audio>
-    </div>
+    
 
     <script>
-        function play(mediaSrc) {
-          const elmPlayer = document.getElementById("player");
-          if (Hls.isSupported()) {
-            var hls = new Hls();
-            hls.loadSource(mediaSrc);
-            hls.attachMedia(elmPlayer);
-          }
+      function hlsPlayerLink (playlist, title, subtitle) {
+        return `https://hls.spectado.com/?stream=${encodeURIComponent(
+          playlist
+        )}&title=${encodeURIComponent(title)}&subtitle=${encodeURIComponent(
+          subtitle
+        )}`;
+      };
+
+        function play(mediaSrc, title,subtitle) {
+          const link = hlsPlayerLink(mediaSrc, title,subtitle);
+          window.open(link, "spectado-hls-player", "height=100, width=400");
         }
       </script>
   </body>

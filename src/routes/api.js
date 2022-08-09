@@ -8,11 +8,11 @@ router.get("/", (_req, res) => {
   res.send("spectado-hls-server");
 });
 
-router.route("/info").get((_req, res) => {
+router.route("/info").get(async (req, res) => {
   res.json(serverInfo());
 });
 
-router.route("/streams").get((req, res) => {
+router.route("/streams").get(async (req, res) => {
   res.json(streamsInfo(req));
 });
 
