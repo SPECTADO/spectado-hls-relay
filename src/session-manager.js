@@ -1,4 +1,5 @@
 import EventEmitter from "events";
+import dayjs from "dayjs";
 import Logger from "./Logger.js";
 //import config from "./config.js";
 
@@ -18,12 +19,17 @@ class SessionManager extends EventEmitter {
     }
 
     Logger.info(`stream-added event ${id}`);
+
     this.activeSessions.push({
       id,
       name: ffmpegManager.config.name,
       config: ffmpegManager.config,
       ref: ffmpegManager,
     });
+
+    global.listenersCleanup = global.listenersCleanup.filter(
+      (item) => item.id !== id
+    );
   }
 
   remove(id) {
@@ -48,7 +54,7 @@ class SessionManager extends EventEmitter {
   removeRef(id) {
     Logger.debug(`Removing reference to ffmpeg manager with is ${id}`);
     this.activeSessions = this.activeSessions.filter((item) => item.id !== id);
-    global.listeners = global.listeners.filter((item) => item.id !== id);
+    global.listenersCleanup.push({ id: id, date: dayjs().add(15, "minutes") });
     return true;
   }
 

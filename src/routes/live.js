@@ -1,7 +1,7 @@
 import express from "express";
 import crypto from "crypto";
 import useragent from "express-useragent";
-import Logger from "../Logger.js";
+//import Logger from "../Logger.js";
 import config from "../config.js";
 
 const router = express.Router();

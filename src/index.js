@@ -7,6 +7,7 @@ import config from "./config.js";
 import Logger from "./Logger.js";
 import filesCleanup from "./workers/filesCleanup.js";
 import configFetch from "./workers/configFetch.js";
+import statsCleanup from "./workers/statsCleanup.js";
 import SessionManager from "./session-manager.js";
 import routes from "./routes.js";
 import serverInfo from "./api/serverInfo.js";
@@ -17,6 +18,7 @@ const srvInfo = serverInfo();
 // GLOBAL var
 global.sessions = new SessionManager();
 global.listeners = [];
+global.listenersCleanup = [];
 
 Logger.log("                        ");
 Logger.log("██╗  ██╗██╗     ███████╗");
@@ -66,6 +68,9 @@ filesCleanup();
 Logger.log(`Started config fetch worker from source "${config.streamSource}"`);
 configFetch();
 
+Logger.log(`Started cleanup worker for stats`);
+statsCleanup();
+
 // init express view engine - ejs
 server.set("view engine", "ejs");
 server.set("views", "./src/views/");
@@ -73,4 +78,4 @@ server.set("views", "./src/views/");
 // init express web routes
 server.use("/", routes);
 
-//  setInterval(() => {Logger.debug({ sessions: global.sessions.getAll() });}, 5000);
+//setInterval(() => {Logger.debug({ sessions: global.sessions.getAll() });Logger.debug("listeners:", global.listeners);Logger.debug("cleanup:", global.listenersCleanup);}, 5000);
