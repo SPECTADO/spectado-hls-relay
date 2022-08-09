@@ -10,10 +10,11 @@ const router = express.Router();
 
 router.all("*", (req, res, next) => {
   res.header("X-Powered-By", "spectado-hls-relay");
+  res.header("Access-Control-Allow-Credentials", true);
   res.header("Access-Control-Allow-Origin", "*");
   res.header(
     "Access-Control-Allow-Headers",
-    "Content-Type, Content-Length, Authorization, Accept, X-Requested-With"
+    "Origin, Content-Type, Content-Length, Authorization, Accept, X-Requested-With, X-HTTP-Method-Override"
   );
   res.header("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
   res.header(

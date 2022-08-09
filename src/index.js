@@ -1,4 +1,5 @@
 import express from "express";
+//import crypto from "crypto";
 import http from "http";
 import https from "https";
 import fs from "fs";
@@ -15,6 +16,7 @@ const srvInfo = serverInfo();
 
 // GLOBAL var
 global.sessions = new SessionManager();
+global.listeners = [];
 
 Logger.log("                        ");
 Logger.log("██╗  ██╗██╗     ███████╗");
@@ -64,9 +66,11 @@ filesCleanup();
 Logger.log(`Started config fetch worker from source "${config.streamSource}"`);
 configFetch();
 
-// init express web routes
+// init express view engine - ejs
 server.set("view engine", "ejs");
 server.set("views", "./src/views/");
+
+// init express web routes
 server.use("/", routes);
 
 //  setInterval(() => {Logger.debug({ sessions: global.sessions.getAll() });}, 5000);
