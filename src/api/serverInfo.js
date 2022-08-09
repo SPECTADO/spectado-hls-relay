@@ -13,7 +13,7 @@ const serverInfo = () => {
   return {
     server: json.name,
     version: json.version,
-    load: 0,
+    load: totalListeners, //for now...
     listeners: totalListeners,
     memory: { free: os.freemem(), total: os.totalmem() },
     uptime: os.uptime(),
