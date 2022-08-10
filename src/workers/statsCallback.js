@@ -47,10 +47,6 @@ const statsCallback = () => {
   setInterval(() => {
     doCallback();
   }, 5 * 60000);
-
-  setTimeout(() => {
-    doCallback();
-  }, 15000); // DBG
 };
 
 export default statsCallback;
