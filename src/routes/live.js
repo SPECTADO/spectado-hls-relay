@@ -1,15 +1,16 @@
 import express from "express";
 import crypto from "crypto";
 import useragent from "express-useragent";
-//import Logger from "../Logger.js";
 import config from "../config.js";
+import Logger from "../Logger.js";
 
 const router = express.Router();
 
 const countStats = async (req) => {
   const streamId = req.params?.streamId;
+
   const isStreamOnline = global.sessions?.activeSessions.reduce(
-    (ret, sess) => (sess.id === streamId ? true : ret),
+    (ret, sess) => (sess.id === streamId && sess.config?.stats ? true : ret),
     false
   );
 
@@ -29,6 +30,10 @@ const countStats = async (req) => {
       lid: hashId,
       user: `${ua.platform}|${ua.browser}|${ua.version}`,
     });
+
+    Logger.debug(
+      `Stream "${streamId}" has a new listener with hash "${hashId}"`
+    );
   }
 };
 

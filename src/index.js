@@ -8,6 +8,7 @@ import Logger from "./Logger.js";
 import filesCleanup from "./workers/filesCleanup.js";
 import configFetch from "./workers/configFetch.js";
 import statsCleanup from "./workers/statsCleanup.js";
+import statsCallback from "./workers/statsCallback.js";
 import SessionManager from "./session-manager.js";
 import routes from "./routes.js";
 import serverInfo from "./api/serverInfo.js";
@@ -70,6 +71,9 @@ configFetch();
 
 Logger.log(`Started cleanup worker for stats`);
 statsCleanup();
+
+Logger.log(`Started callback worker for stats`);
+statsCallback();
 
 // init express view engine - ejs
 server.set("view engine", "ejs");
