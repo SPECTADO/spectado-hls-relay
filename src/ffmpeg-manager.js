@@ -100,7 +100,11 @@ class FfmpegManager {
         );
         return;
       }
-      Logger.debug(`Transmuxing of "${this.config.id}" ended. Code ${code}`);
+
+      global.sessions.removeRef(this.config.id); // ffmpeg could be killed as proccess
+      Logger.debug(
+        `Transmuxing of "${this.config.id}" ended with code ${code}`
+      );
     });
   }
 
