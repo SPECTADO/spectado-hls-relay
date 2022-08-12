@@ -5,6 +5,8 @@ import config from "./config.js";
 import mkdirp from "mkdirp";
 import fs from "fs";
 
+const watchdogInterval = 10000;
+
 /**
  * config object
  * {
@@ -76,7 +78,10 @@ class FfmpegManager {
     this.ffmpeg_exec = spawn(config.ffmpeg, argv);
     Logger.debug(`Created ffmpeg process with id ${this.ffmpeg_exec.pid}`);
     global.sessions.add(this);
-    this.watchdog = setTimeout(this.handleHangedFfmpeg.bind(this), 15000);
+    this.watchdog = setTimeout(
+      this.handleHangedFfmpeg.bind(this),
+      watchdogInterval
+    );
 
     this.ffmpeg_exec.on("error", (e) => {
       Logger.error(e);
@@ -85,13 +90,19 @@ class FfmpegManager {
     this.ffmpeg_exec.stdout.on("data", (data) => {
       Logger.ffdebug(`[${this.config.id}] - ${data}`);
       clearTimeout(this.watchdog);
-      this.watchdog = setTimeout(this.handleHangedFfmpeg.bind(this), 15000);
+      this.watchdog = setTimeout(
+        this.handleHangedFfmpeg.bind(this),
+        watchdogInterval
+      );
     });
 
     this.ffmpeg_exec.stderr.on("data", (data) => {
       Logger.ffdebug(`[${this.config.id}] - ${data}`);
       clearTimeout(this.watchdog);
-      this.watchdog = setTimeout(this.handleHangedFfmpeg.bind(this), 15000);
+      this.watchdog = setTimeout(
+        this.handleHangedFfmpeg.bind(this),
+        watchdogInterval
+      );
     });
 
     this.ffmpeg_exec.on("close", (code) => {
