@@ -83,3 +83,11 @@ server.set("views", "./src/views/");
 server.use("/", routes);
 
 //setInterval(() => {Logger.debug({ sessions: global.sessions.getAll() });Logger.debug("listeners:", global.listeners);Logger.debug("cleanup:", global.listenersCleanup);}, 5000);
+
+/*
+Logger.error("test");
+Logger.warn("test");
+Logger.info("test");
+Logger.debug("test");
+Logger.ffdebug("test");
+*/

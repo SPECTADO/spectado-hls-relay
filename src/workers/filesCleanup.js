@@ -2,101 +2,63 @@ import fs from "fs";
 import Logger from "../Logger.js";
 import config from "../config.js";
 
-const fileLifetime = 2; //minutes
-const fileLifetimeStale = 10; //minutes
+const mediaRoot = config.hls.root;
+const fileLifetimeStale = 15; //minutes
+const scheduleInterval = 1; //minutes
 
-const scanAndClean = (mediaRoot) => {
+const scanAndClean = () => {
   const now = new Date().getTime();
+  const validsessions = global.sessions?.activeSessions.reduce(
+    (ret, sess) => [...ret, sess.id],
+    []
+  );
+
+  Logger.debug("Running cleanup job", mediaRoot);
 
   fs.readdir(`${mediaRoot}`, function (err, dirs) {
-    if (!err) {
-      dirs.forEach((dirname) => {
-        try {
-          fs.readFileSync(`${mediaRoot}/${dirname}/_lock`);
+    if (err) {
+      Logger.error("Cleanup job error", err);
+      return false;
+    }
 
-          try {
-            const playlistFile = fs.statSync(
-              `${mediaRoot}/${dirname}/playlist.m3u8`
-            );
+    dirs.forEach((dir) => {
+      try {
+        const isValidSession = validsessions.includes(dir);
+        if (!isValidSession) {
+          // invalid session directory, check if the playlist wasn't modified in the last x minitues...
+          const playlistFile = fs.statSync(`${mediaRoot}/${dir}/playlist.m3u8`);
+          if (now - playlistFile.mtime > fileLifetimeStale * 60 * 1000) {
+            Logger.info(`Found invalid and stale session directory "${dir}"`);
 
-            if (now - playlistFile.mtime > fileLifetimeStale * 60000) {
-              Logger.debug("Removing the temp folder > " + dirname);
-              try {
-                fs.rmSync(`${mediaRoot}/${dirname}`, {
-                  recursive: true,
-                  force: true,
-                });
-              } catch {}
-            }
-          } catch {}
-        } catch {
-          try {
-            const playlistFile = fs.statSync(
-              `${mediaRoot}/${dirname}/playlist.m3u8`
-            );
-
-            if (now - playlistFile.mtime > fileLifetime * 60000) {
-              Logger.debug("Removing the temp folder > " + dirname);
-              try {
-                fs.rmSync(`${mediaRoot}/${dirname}`, {
-                  recursive: true,
-                  force: true,
-                });
-              } catch {}
-            }
-          } catch {
-            Logger.debug("Removing the temp folder > " + dirname);
             try {
-              fs.rmSync(`${mediaRoot}/${dirname}`, {
+              fs.rmSync(`${mediaRoot}/${dir}`, {
                 recursive: true,
                 force: true,
               });
-            } catch {}
+            } catch (e) {
+              Logger.warn(`Unable to delete session directory "${dir}"`);
+              Logger.debug(e);
+            }
           }
         }
-
-        fs.readdir(`${mediaRoot}/${dirname}`, function (err, files) {
-          if (!err) {
-            files.forEach((filename) => {
-              if (
-                filename !== "init.mp4" &&
-                filename !== "playlist.m3u8" &&
-                filename !== "_lock"
-              ) {
-                const ftime = fs
-                  .statSync(`${mediaRoot}/${dirname}/${filename}`)
-                  .mtime.getTime();
-
-                if (now - ftime > fileLifetime * 60000) {
-                  try {
-                    fs.unlinkSync(`${mediaRoot}/${dirname}/${filename}`, {
-                      recursive: true,
-                      force: true,
-                    });
-                    Logger.debug(
-                      `Delete stale file from > "${dirname}" > ${filename}`
-                    );
-                  } catch {}
-                }
-              }
-            });
-          }
-        });
-      });
-    }
+      } catch {
+        // no playlist in the directory, dedelete it
+        Logger.warn(`Invalid session directory found "${dir}"`);
+        try {
+          fs.rmSync(`${mediaRoot}/${dir}`, {
+            recursive: true,
+            force: true,
+          });
+        } catch {}
+      }
+    });
   });
 };
 
 const filesCleanup = () => {
-  const mediaRoot = config.hls.root;
   setInterval(() => {
-    scanAndClean(mediaRoot);
-  }, 60000);
-
-  setTimeout(() => {
-    // if (!config.isDev)
-    scanAndClean(mediaRoot);
-  }, 50);
+    scanAndClean();
+  }, scheduleInterval * 60 * 1000);
 };
 
 export default filesCleanup;

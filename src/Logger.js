@@ -29,17 +29,22 @@ const info = (...args) => {
 
 const warn = (...args) => {
   if (logType < LOG_TYPES.WARNING) return;
-  console.log(logTime(), process.pid, chalk.bold.redBright("[WARN]"), ...args);
+  console.log(logTime(), process.pid, chalk.bold.yellow("[WARN]"), ...args);
 };
 
 const error = (...args) => {
   if (logType < LOG_TYPES.ERROR) return;
-  console.log(logTime(), process.pid, chalk.bold.red("[ERROR]"), ...args);
+  console.log(logTime(), process.pid, chalk.bold.redBright("[ERROR]"), ...args);
 };
 
 const debug = (...args) => {
   if (logType < LOG_TYPES.DEBUG) return;
-  console.log(logTime(), process.pid, chalk.bold.yellow("[DEBUG]"), ...args);
+  console.log(
+    logTime(),
+    process.pid,
+    chalk.bold.blueBright("[DEBUG]"),
+    ...args
+  );
 };
 
 const ffdebug = (...args) => {

@@ -32,13 +32,17 @@ class FfmpegManager {
     const hlsPath = `${config.hls.root}/${this.config.id}`;
     mkdirp.sync(hlsPath);
     try {
-      fs.closeSync(fs.openSync(`${hlsPath}/_lock`, "w"));
+      const newPlaylistPath = `${hlsPath}/playlist.m3u8`;
+      if (!fs.existsSync(newPlaylistPath)) {
+        fs.closeSync(fs.openSync(newPlaylistPath, "w"));
+      }
     } catch {}
 
     let argv = [
       "-loglevel",
       "quiet",
-      // "-stream_loop","-1",
+      "-stream_loop",
+      "-1",
       "-re",
       "-i",
       this.config.source,
@@ -61,12 +65,8 @@ class FfmpegManager {
       config.hls.hlsTime,
       "-hls_list_size",
       config.hls.hlsListSize,
-      "-hls_delete_threshold",
-      config.hls.hlsListSize + 2,
-      // "-hls_start_number_source", "datetime",
-      // "-start_number","8",
       "-hls_segment_filename",
-      `${hlsPath}/s%8d.m4s`,
+      `${hlsPath}/s%4d.m4s`,
       "-hls_flags",
       "delete_segments+omit_endlist+discont_start+append_list+program_date_time",
       `${hlsPath}/playlist.m3u8`,
@@ -89,10 +89,6 @@ class FfmpegManager {
     });
 
     this.ffmpeg_exec.on("close", (code) => {
-      try {
-        fs.unlinkSync(`${config.hls.root}/${this.config.id}/_lock`);
-      } catch {}
-
       // code 255 = clean exit - killed by manager
       if (code !== 255) {
         global.sessions.kill(this.config.id);
