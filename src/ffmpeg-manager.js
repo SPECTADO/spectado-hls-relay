@@ -37,9 +37,8 @@ class FfmpegManager {
 
     let argv = [
       "-loglevel",
-      "error",
-      "-stream_loop",
-      "-1",
+      "quiet",
+      // "-stream_loop","-1",
       "-re",
       "-i",
       this.config.source,
