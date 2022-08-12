@@ -36,6 +36,8 @@ class FfmpegManager {
     } catch {}
 
     let argv = [
+      "-loglevel",
+      "error",
       "-stream_loop",
       "-1",
       "-re",
