@@ -18,6 +18,7 @@ class FfmpegManager {
     this.ffmpeg_exec = null;
     this.started = new Date();
     this.config = config;
+    this.watchdog = null;
   }
 
   start() {
@@ -40,7 +41,7 @@ class FfmpegManager {
 
     let argv = [
       "-loglevel",
-      "quiet",
+      "info",
       "-stream_loop",
       "-1",
       "-re",
@@ -75,6 +76,7 @@ class FfmpegManager {
     this.ffmpeg_exec = spawn(config.ffmpeg, argv);
     Logger.debug(`Created ffmpeg process with id ${this.ffmpeg_exec.pid}`);
     global.sessions.add(this);
+    this.watchdog = setTimeout(this.handleHangedFfmpeg.bind(this), 15000);
 
     this.ffmpeg_exec.on("error", (e) => {
       Logger.error(e);
@@ -82,13 +84,18 @@ class FfmpegManager {
 
     this.ffmpeg_exec.stdout.on("data", (data) => {
       Logger.ffdebug(`[${this.config.id}] - ${data}`);
+      clearTimeout(this.watchdog);
+      this.watchdog = setTimeout(this.handleHangedFfmpeg.bind(this), 15000);
     });
 
     this.ffmpeg_exec.stderr.on("data", (data) => {
       Logger.ffdebug(`[${this.config.id}] - ${data}`);
+      clearTimeout(this.watchdog);
+      this.watchdog = setTimeout(this.handleHangedFfmpeg.bind(this), 15000);
     });
 
     this.ffmpeg_exec.on("close", (code) => {
+      clearTimeout(this.watchdog);
       // code 255 = clean exit - killed by manager
       if (code !== 255) {
         global.sessions.kill(this.config.id);
@@ -98,7 +105,7 @@ class FfmpegManager {
         return;
       }
 
-      global.sessions.removeRef(this.config.id); // ffmpeg could be killed as proccess
+      global.sessions.removeRef(this.config.id); // ffmpeg could be killed as process
       Logger.debug(
         `Transmuxing of "${this.config.id}" ended with code ${code}`
       );
@@ -115,6 +122,14 @@ class FfmpegManager {
       );
       resolve();
     });
+  }
+
+  handleHangedFfmpeg() {
+    Logger.error(
+      `FFMPEG process for stream "${this.config.id}" with pid "${this.ffmpeg_exec.pid}" seems to be frozen...`
+    );
+    this.ffmpeg_exec.kill();
+    global.sessions.removeRef(this.config.id);
   }
 }
 
