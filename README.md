@@ -4,6 +4,7 @@
 ![Docker Image Size (latest by date)](https://img.shields.io/docker/image-size/spectado/spectado-hls-relay?style=for-the-badge)
 ![GitHub package.json version](https://img.shields.io/github/package-json/v/spectado/spectado-hls-relay?logo=github&style=for-the-badge)
 ![GitHub last commit (branch)](https://img.shields.io/github/last-commit/spectado/spectado-hls-relay/main?logo=github&style=for-the-badge)
+![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/spectado/spectado-hls-relay?logo=docker&logoColor=%23ffffff&style=for-the-badge)
 
 This simple server will fetch any remote or local audio file and will transcode it to live HLS stream. You can even use live stream as a source, making this server for example live HLS transcoder for Icecast server.
 
