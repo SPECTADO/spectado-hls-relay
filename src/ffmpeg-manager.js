@@ -44,12 +44,20 @@ class FfmpegManager {
     let argv = [
       "-loglevel",
       "info",
+      "-fflags",
+      "nobuffer",
+      "-flags",
+      "low_delay",
       "-stream_loop",
       "-1",
       "-re",
       "-i",
       this.config.source,
-      "-c:a",
+      "-muxdelay",
+      "1",
+      "-muxpreload",
+      "1",
+      "-acodec",
       config.codec.type,
       "-ab",
       config.codec.bitrate,
@@ -70,6 +78,8 @@ class FfmpegManager {
       config.hls.hlsListSize,
       "-hls_segment_filename",
       `${hlsPath}/s%4d.m4s`,
+      "-lhls",
+      "1",
       "-hls_flags",
       "delete_segments+omit_endlist+discont_start+append_list+program_date_time",
       `${hlsPath}/playlist.m3u8`,
@@ -77,6 +87,7 @@ class FfmpegManager {
 
     this.ffmpeg_exec = spawn(config.ffmpeg, argv);
     Logger.debug(`Created ffmpeg process with id ${this.ffmpeg_exec.pid}`);
+    Logger.ffdebug(config.ffmpeg, argv.join(" "));
     global.sessions.add(this);
     this.watchdog = setTimeout(
       this.handleHangedFfmpeg.bind(this),
