@@ -1,4 +1,4 @@
-# Change log
+# HLS Relay server
 
 ## 1.0.18
 
