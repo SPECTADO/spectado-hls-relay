@@ -15,25 +15,29 @@ const countStats = async (req) => {
   );
 
   if (isStreamOnline) {
-    const ua = useragent.parse(req.headers["user-agent"]);
-    const uaHash = crypto
-      .createHash("md5")
-      .update(`${ua.source}${req.headers["accept-language"]}`)
-      .digest("hex");
-    const ipHash = Buffer.from(req.ip).toString("base64");
-    const hashId = `${streamId}-${ipHash}-${uaHash}`;
+    try {
+      const ua = useragent.parse(req.headers["user-agent"]);
+      const uaHash = crypto
+        .createHash("md5")
+        .update(`${ua.source}${req.headers["accept-language"]}`)
+        .digest("hex");
+      const ipHash = Buffer.from(req.ip || "?").toString("base64");
+      const hashId = `${streamId}-${ipHash}-${uaHash}`;
 
-    global.listeners = global.listeners.filter((item) => item.lid !== hashId);
+      global.listeners = global.listeners.filter((item) => item.lid !== hashId);
 
-    global.listeners.push({
-      id: streamId,
-      lid: hashId,
-      user: `${ua.platform}|${ua.browser}|${ua.version}`,
-    });
+      global.listeners.push({
+        id: streamId,
+        lid: hashId,
+        user: `${ua.platform}|${ua.browser}|${ua.version}`,
+      });
 
-    Logger.debug(
-      `Stream "${streamId}" has a new listener with hash "${hashId}"`
-    );
+      Logger.debug(
+        `Stream "${streamId}" has a new listener with hash "${hashId}"`
+      );
+    } catch (e) {
+      Logger.warn(e);
+    }
   }
 };
 
