@@ -1,6 +1,7 @@
 import dotenv from "dotenv";
 dotenv.config();
 const env = process.env;
+//console.log({ env });
 
 const config = {
   ffmpeg: env.SHLS_FFMPEGBIN || "ffmpeg",
@@ -23,6 +24,7 @@ const config = {
     bitrate: env.SHLS_BITRATE || "64k",
     channels: env.SHLS_CHANNELS || 2,
     sampleRate: env.SHLS_SAMPLERATE || 44100,
+    normalize: env.SHLS_NORM === "true" ? true : false,
   },
 
   hls: {

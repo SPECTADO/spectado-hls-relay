@@ -24,6 +24,7 @@ ENV SHLS_HTTPS_CERT="/tmp-cert/fullchain.pem"
 ENV SHLS_HTTPS_CERT_KEY="/tmp-cert/privkey.pem"
 ENV SHLS_FFMPEGBIN="./bin/ffmpeg"
 ENV SHLS_MEDIAROOT="/tmp/hls"
+ENV SHLS_NORM=false
 ENV SHLS_CODEC="aac"
 ENV SHLS_BITRATE="64k"
 ENV SHLS_CHANNELS=2

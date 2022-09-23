@@ -41,49 +41,56 @@ class FfmpegManager {
       }
     } catch {}
 
-    let argv = [
-      "-loglevel",
-      "info",
-      "-fflags",
-      "nobuffer",
-      "-flags",
-      "low_delay",
-      "-stream_loop",
-      "-1",
-      "-re",
-      "-i",
-      this.config.source,
-      "-muxdelay",
-      "1",
-      "-muxpreload",
-      "1",
-      "-acodec",
-      config.codec.type,
-      "-ab",
-      config.codec.bitrate,
-      "-ac",
-      config.codec.channels,
-      "-ar",
-      config.codec.sampleRate,
-      "-f",
-      "hls",
-      "-hls_segment_type",
-      "fmp4",
-      "-segment_list_flags",
-      "live",
-      // "-hls_playlist_type","event",
-      "-hls_time",
-      config.hls.hlsTime,
-      "-hls_list_size",
-      config.hls.hlsListSize,
-      "-hls_segment_filename",
-      `${hlsPath}/s%4d.m4s`,
-      "-lhls",
-      "1",
-      "-hls_flags",
-      "delete_segments+omit_endlist+discont_start+append_list+program_date_time",
-      `${hlsPath}/playlist.m3u8`,
-    ];
+    // build FFMPEG arguments
+    let argv = [];
+    argv.push("-loglevel");
+    argv.push("info");
+    argv.push("-fflags");
+    argv.push("nobuffer");
+    argv.push("-flags");
+    argv.push("low_delay");
+    argv.push("-stream_loop");
+    argv.push("-1");
+    argv.push("-re");
+    argv.push("-i");
+    argv.push(this.config.source);
+    argv.push("-muxdelay");
+    argv.push("1");
+    argv.push("-muxpreload");
+    argv.push("1");
+    argv.push("-acodec");
+    argv.push(config.codec.type);
+    argv.push("-ab");
+    argv.push(config.codec.bitrate);
+    argv.push("-ac");
+    argv.push(config.codec.channels);
+    argv.push("-ar");
+    argv.push(config.codec.sampleRate);
+    if (config.codec.normalize) {
+      argv.push("-af");
+      argv.push("loudnorm=I=-16:LRA=12:TP=-1.5");
+    }
+    argv.push("-f");
+    argv.push("hls");
+    argv.push("-hls_segment_type");
+    argv.push("fmp4");
+    argv.push("-segment_list_flags");
+    argv.push("live");
+    //argv.push("-hls_playlist_type"); argv.push("event");
+    argv.push("-hls_time");
+    argv.push(config.hls.hlsTime);
+    argv.push("-hls_list_size");
+    argv.push(config.hls.hlsListSize);
+    argv.push("-hls_segment_filename");
+    argv.push(`${hlsPath}/s%4d.m4s`);
+    argv.push("-lhls");
+    argv.push("1");
+    argv.push("-hls_flags");
+    argv.push(
+      "delete_segments+omit_endlist+discont_start+append_list+program_date_time"
+    );
+    argv.push(`${hlsPath}/playlist.m3u8`);
+    // [end] build FFMPEG arguments
 
     this.ffmpeg_exec = spawn(config.ffmpeg, argv);
     Logger.debug(`Created ffmpeg process with id ${this.ffmpeg_exec.pid}`);

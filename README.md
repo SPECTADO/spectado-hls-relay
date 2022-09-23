@@ -56,6 +56,7 @@ _This feature is still in development and may not work 100%_
 | SHLS_HTTPS_KEY     | /etc/letsencrypt/live/edge/privkey.pem   |
 | SHLS_FFMPEGBIN     | ffmpeg                                   |
 | SHLS_MEDIAROOT     | /tmp/hls                                 |
+| SHLS_NORM          | false                                    |
 | SHLS_CODEC         | aac                                      |
 | SHLS_BITRATE       | 64k                                      |
 | SHLS_CHANNELS      | 2                                        |

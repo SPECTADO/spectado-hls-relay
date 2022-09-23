@@ -1,5 +1,9 @@
 # HLS Relay server
 
+## 1.1.0
+
+- Support for audio normalization
+
 ## 1.0.18
 
 - fixed critical error in countStats function that can cause server to crash

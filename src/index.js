@@ -75,6 +75,10 @@ statsCleanup();
 Logger.log(`Started callback worker for stats`);
 statsCallback();
 
+Logger.log(
+  `Audio Normalization is ${config.codec.normalize ? "enabled" : "disabled"}`
+);
+
 // init express view engine - ejs
 server.set("view engine", "ejs");
 server.set("views", "./src/views/");
