@@ -3,3 +3,4 @@ _temp
 .env
 .dccache
 __src
+.DS_Store

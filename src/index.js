@@ -41,7 +41,7 @@ try {
     Logger.log(`HTTP  listening on port ${config.http.port}`);
   });
 } catch (err) {
-  Logger.warn(`HTTP error - can't start on port ${config.https.port}`);
+  Logger.warn(`HTTP error - can't start on port ${config.http.port}`);
   Logger.debug(err);
 }
 
