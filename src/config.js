@@ -29,8 +29,8 @@ const config = {
 
   hls: {
     root: env.SHLS_MEDIAROOT || "/tmp/hls",
-    hlsTime: 5,
-    hlsListSize: 4,
+    hlsTime: 10,
+    hlsListSize: 6,
   },
 };
 
