@@ -59,7 +59,7 @@ router.all("*.m3u8", (req, res, next) => {
 router.all("*.m4s", (_req, res, next) => {
   res.header(
     "Cache-Control",
-    `max-age:120,s-max-age=120,must-revalidate,proxy-revalidate,stale-while-revalidate`
+    `max-age:120,s-max-age=120,stale-while-revalidate`
   );
   next();
 });
