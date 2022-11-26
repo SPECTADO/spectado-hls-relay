@@ -14,8 +14,7 @@ COPY package*.json ./
 COPY yarn.lock ./
 
 #RUN npm i
-#RUN yarn install --frozen-lockfile 
-RUN yarn install
+RUN yarn install --frozen-lockfile 
 
 COPY . .
 

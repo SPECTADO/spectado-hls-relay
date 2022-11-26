@@ -24,8 +24,7 @@
     "express": "^4.18.1",
     "express-useragent": "^1.0.15",
     "mkdirp": "^1.0.4",
-    "node-fetch": "^3.2.10",
-    "posix": "^4.2.0"
+    "node-fetch": "^3.2.10"
   },
   "devDependencies": {
     "ffbinaries": "^1.1.4",
