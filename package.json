@@ -11,9 +11,9 @@
     "dev": "nodemon src/index.js --ignore '_temp/*'",
     "debug": "serve -l 8888",
     "build": "docker build . -t spectado/spectado-hls-relay --platform linux/amd64",
-    "ffmpeg:macos": "ffbinaries ffmpeg --platform=mac --output=./_temp",
-    "ffmpeg:linux": "ffbinaries ffmpeg --platform=linux-64 --output=./_temp",
-    "ffmpeg:win": "ffbinaries ffmpeg --platform=windows-64 --output=./_temp",
+    "ffmpeg:macos": "ffbinaries ffmpeg --platform=mac --output=./_temp/bin",
+    "ffmpeg:linux": "ffbinaries ffmpeg --platform=linux-64 --output=./_temp/bin",
+    "ffmpeg:win": "ffbinaries ffmpeg --platform=windows-64 --output=./_temp/bin",
     "version": "echo $npm_package_version"
   },
   "dependencies": {
