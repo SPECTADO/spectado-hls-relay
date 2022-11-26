@@ -1,5 +1,6 @@
 import express from "express";
 //import crypto from "crypto";
+import posix from "posix";
 import http from "http";
 import https from "https";
 import fs from "fs";
@@ -34,6 +35,7 @@ Logger.log("------------------------------------------------");
 Logger.log(srvInfo.server);
 Logger.log(`version: ${srvInfo.version}`);
 Logger.log(`${srvInfo.platform} - ${srvInfo.cpu.arch}`);
+Logger.log(`OS limits: ${JSON.stringify(posix.getrlimit("nofile"))}`);
 Logger.log("------------------------------------------------");
 
 try {
