@@ -1,5 +1,9 @@
 # HLS Relay server
 
+## 1.1.1
+
+- Tweaked eth load stats
+
 ## 1.1.0
 
 - Support for audio normalization

@@ -1,10 +1,25 @@
 import os from "os";
 // import config from "../config.js";
+import si from "systeminformation";
 import { readFile } from "fs/promises";
 
 const json = JSON.parse(
   await readFile(new URL("../../package.json", import.meta.url))
 );
+
+let netLoad = 0;
+let netTx = 0;
+const netInfo = await si.networkInterfaces("default"); // .speed - Mbit / s
+
+setInterval(function () {
+  si.networkStats().then((data) => {
+    try {
+      const txSpeed = parseInt(data[0].tx_sec / 1024 / 1024); // .tx_sec bytes / second
+      netLoad = Math.round((txSpeed / netInfo.speed) * 100);
+      netTx = txSpeed;
+    } catch {}
+  });
+}, 5000);
 
 const serverInfo = () => {
   const cpuLoad = os.loadavg();
@@ -13,10 +28,14 @@ const serverInfo = () => {
   return {
     server: json.name,
     version: json.version,
-    load: totalListeners, //for now...
+    load: netLoad || 0,
     listeners: totalListeners,
     memory: { free: os.freemem(), total: os.totalmem() },
     uptime: os.uptime(),
+    eth: {
+      tx: netTx,
+      speed: netInfo.speed,
+    },
     cpu: {
       load: cpuLoad,
       arch: os.arch(),
