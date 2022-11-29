@@ -12,6 +12,7 @@ let netLoad = -1;
 let netTx = -1;
 let netRaw = {};
 const netInfo = await si.networkInterfaces("default"); // .speed - Mbit / s
+const netInterfaces = await si.networkInterfaces();
 
 setInterval(function () {
   si.networkStats().then((data) => {
@@ -40,7 +41,7 @@ const serverInfo = () => {
     eth: {
       tx: netTx,
       speed: netInfo.speed,
-      _raw: { netInfo, netRaw },
+      _raw: { netInfo, netRaw, netInterfaces },
     },
     cpu: {
       load: cpuLoad,
