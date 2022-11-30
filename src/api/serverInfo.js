@@ -34,7 +34,7 @@ setInterval(function () {
           1024) *
           8
       );
-      netLoad = Math.round((txSpeed / netSpeed) * 100);
+      netLoad = Math.round((txSpeed / netSpeed) * 1000) / 10;
       netTx = txSpeed;
       netRx = rxSpeed;
 
