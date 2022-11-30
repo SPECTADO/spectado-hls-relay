@@ -15,7 +15,7 @@ const netInfo = await si.networkInterfaces("default"); // .speed - Mbit / s
 const netInterfaces = await si.networkInterfaces();
 
 setInterval(function () {
-  si.networkStats().then((data) => {
+  si.networkStats("*").then((data) => {
     try {
       const txSpeed = parseInt(data[0].tx_sec / 1024 / 1024); // .tx_sec bytes / second
       netLoad = Math.round((txSpeed / netInfo.speed) * 100);
