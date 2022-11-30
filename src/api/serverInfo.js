@@ -38,12 +38,7 @@ setInterval(function () {
       netTx = txSpeed;
       netRx = rxSpeed;
 
-      Logger.debug({
-        txSpeed,
-        rxSpeed,
-        netSpeed,
-        tx: data.reduce((tx, int) => tx + parseFloat(int.tx_sec), 0),
-      });
+      //Logger.debug({ txSpeed, rxSpeed, netSpeed });
     } catch (e) {
       Logger.debug("networkStats error", e);
     }
