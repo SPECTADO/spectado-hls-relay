@@ -2,7 +2,7 @@
 
 ## 1.1.1
 
-- Tweaked eth load stats
+- Tweaked eth & load stats
 
 ## 1.1.0
 

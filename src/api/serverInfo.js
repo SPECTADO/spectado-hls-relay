@@ -10,19 +10,42 @@ const json = JSON.parse(
 
 let netLoad = -1;
 let netTx = -1;
-let netRaw = {};
-const netInfo = await si.networkInterfaces("default"); // .speed - Mbit / s
-const netInterfaces = await si.networkInterfaces();
+let netRx = -1;
+const netInfo = await si.networkInterfaces("*"); // .speed - Mbit / s
+const netSpeed = netInfo.reduce(
+  (speed, int) => (int.speed > speed ? int.speed : speed),
+  -1
+);
+//const netInterfaces = await si.networkInterfaces();
 
 setInterval(function () {
   si.networkStats("*").then((data) => {
+    //Logger.debug(data);
     try {
-      const txSpeed = parseInt(data[0].tx_sec / 1024 / 1024); // .tx_sec bytes / second
-      netLoad = Math.round((txSpeed / netInfo.speed) * 100);
+      const txSpeed = Math.round(
+        (data.reduce((tx, int) => tx + parseFloat(int.tx_sec), 0) /
+          1024 /
+          1024) *
+          8
+      );
+      const rxSpeed = Math.round(
+        (data.reduce((rx, int) => rx + parseFloat(int.rx_sec), 0) /
+          1024 /
+          1024) *
+          8
+      );
+      netLoad = Math.round((txSpeed / netSpeed) * 100);
       netTx = txSpeed;
-      netRaw = data;
+      netRx = rxSpeed;
+
+      Logger.debug({
+        txSpeed,
+        rxSpeed,
+        netSpeed,
+        tx: data.reduce((tx, int) => tx + parseFloat(int.tx_sec), 0),
+      });
     } catch (e) {
-      Logger.error(e);
+      Logger.debug("networkStats error", e);
     }
   });
 }, 5000);
@@ -40,8 +63,8 @@ const serverInfo = () => {
     uptime: os.uptime(),
     eth: {
       tx: netTx,
-      speed: netInfo.speed,
-      _raw: { netInfo, netRaw, netInterfaces },
+      rx: netRx,
+      speed: netSpeed,
     },
     cpu: {
       load: cpuLoad,
