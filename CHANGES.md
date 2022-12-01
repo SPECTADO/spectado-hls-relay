@@ -1,5 +1,9 @@
 # HLS Relay server
 
+## 1.1.2
+
+- Fixed bug (waning in logs) when no User-Agent string is present
+
 ## 1.1.1
 
 - Tweaked eth & load stats
