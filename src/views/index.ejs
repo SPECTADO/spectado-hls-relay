@@ -24,6 +24,7 @@
               <th>ID</th>
               <th>Name</th>
               <th>Link</th>
+              <th>State</th>
               <th>Live</th>
               <th>&nbsp;</th>
             </tr>
@@ -36,6 +37,7 @@
               <td><%= streams[i]["id"] %></td>
               <td><%= streams[i]["name"] %></td>
               <td><%= streams[i]["link"] %></td>
+              <td><%= streams[i]["state"] %></td>
               <td><%= streams[i]["isLive"] ? 'YES':'no' %></td>
               <td>
                 <button  type="button" onClick="play('<%= streams[i]["link"] %>','<%= streams[i]["id"] %>','<%= streams[i]["name"] %>')" class="py-2 px-4 bg-blue-500 text-white text-xs font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75">
