@@ -51,7 +51,9 @@ const doFetchConfig = async () => {
               newStream.start();
             }, 100);
           } else {
-            Logger.debug("live -> recording - ignoring stream switch...");
+            Logger.debug(
+              `live -> recording - ignoring stream switch - ${stream.id} - ${stream.source}`
+            );
           }
         }
       } else {
