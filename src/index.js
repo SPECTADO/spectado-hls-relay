@@ -95,7 +95,8 @@ if (cluster.isPrimary) {
             id: item.id,
             name: item.name ?? false,
             isLive: item.config.isLive ?? false,
-            //link: `${baseUrl}/live/${item.id}/playlist.m3u8`,
+            time: item.config.time ?? "-",
+            state: item.config.state,
             pid: item.ref?.ffmpeg_exec?.pid,
             started: item.ref?.started,
           };

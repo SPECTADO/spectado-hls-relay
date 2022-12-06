@@ -35,7 +35,10 @@ const doFetchConfig = async () => {
         // update existing streams...
 
         const session = global.sessions.get(stream.id);
-        if (stream.source !== session.config.source) {
+        if (
+          stream.source !== session.config.source ||
+          stream.isLive !== session.config.isLive
+        ) {
           // only switch if from isLive false->true or true->true.
           if (
             (stream.isLive === true && session.config.isLive === true) ||
