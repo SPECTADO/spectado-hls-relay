@@ -32,6 +32,27 @@ const createNewWorker = () => {
   });
 };
 
+const syncWorkerData = () => {
+  const streams = global.sessions.getAll();
+  for (const id in cluster.workers) {
+    cluster.workers[id].send({
+      cmd: "sync",
+      streams: streams.map((item) => {
+        //Logger.debug(item);
+        return {
+          id: item.id,
+          name: item.name ?? false,
+          isLive: item.config.isLive ?? false,
+          time: item.config.time ?? "-",
+          state: item.config.state,
+          pid: item.ref?.ffmpeg_exec?.pid,
+          started: item.ref?.started,
+        };
+      }),
+    });
+  }
+};
+
 if (cluster.isPrimary) {
   // single process code
   Logger.log("                        ");
@@ -85,26 +106,12 @@ if (cluster.isPrimary) {
       createNewWorker();
     }
 
-    // sync data to workers...
-    const streams = global.sessions.getAll();
-    for (const id in cluster.workers) {
-      cluster.workers[id].send({
-        cmd: "sync",
-        streams: streams.map((item) => {
-          //Logger.debug(item);
-          return {
-            id: item.id,
-            name: item.name ?? false,
-            isLive: item.config.isLive ?? false,
-            time: item.config.time ?? "-",
-            state: item.config.state,
-            pid: item.ref?.ffmpeg_exec?.pid,
-            started: item.ref?.started,
-          };
-        }),
-      });
-    }
-  }, 5000);
+    syncWorkerData();
+  }, 2000);
+
+  setTimeout(() => {
+    syncWorkerData();
+  }, 250);
 } else if (cluster.isWorker) {
   // run in cluster
   global.streams = [];
