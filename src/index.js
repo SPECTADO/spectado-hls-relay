@@ -76,7 +76,6 @@ if (cluster.isPrimary) {
 
   setInterval(() => {
     Logger.debug("send sync...");
-    const streams = global.sessions.getAll();
 
     //check number of workers...
     const currentWorkerCount = Object.keys(cluster.workers).length;
@@ -86,13 +85,16 @@ if (cluster.isPrimary) {
     }
 
     // sync data to workers...
+    const streams = global.sessions.getAll();
     for (const id in cluster.workers) {
       cluster.workers[id].send({
         cmd: "sync",
         streams: streams.map((item) => {
+          //Logger.debug(item);
           return {
             id: item.id,
             name: item.name ?? false,
+            isLive: item.config.isLive ?? false,
             //link: `${baseUrl}/live/${item.id}/playlist.m3u8`,
             pid: item.ref?.ffmpeg_exec?.pid,
             started: item.ref?.started,
