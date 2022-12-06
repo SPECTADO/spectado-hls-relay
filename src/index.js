@@ -76,7 +76,7 @@ if (cluster.isPrimary) {
   }
 
   setInterval(() => {
-    Logger.debug("send sync...");
+    //Logger.debug("send sync...");
 
     //check number of workers...
     const currentWorkerCount = Object.keys(cluster.workers).length;
