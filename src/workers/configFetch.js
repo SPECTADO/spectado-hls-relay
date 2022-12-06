@@ -35,13 +35,26 @@ const doFetchConfig = async () => {
         // update existing streams...
 
         const session = global.sessions.get(stream.id);
-        if (stream.source !== session.config.source) {
-          Logger.info(`Update stream: ${stream.id} - ${stream.source}`);
-          global.sessions.kill(stream.id);
-          setTimeout(() => {
-            const newStream = new FfmpegManager(stream);
-            newStream.start();
-          }, 100);
+        if (
+          stream.source !== session.config.source ||
+          stream.isLive !== session.config.isLive
+        ) {
+          // only switch if from isLive false->true or true->true.
+          if (
+            (stream.isLive === true && session.config.isLive === true) ||
+            session.config.isLive !== true
+          ) {
+            Logger.info(`Update stream: ${stream.id} - ${stream.source}`);
+            global.sessions.kill(stream.id);
+            setTimeout(() => {
+              const newStream = new FfmpegManager(stream);
+              newStream.start();
+            }, 100);
+          } else {
+            Logger.debug(
+              `live -> recording - ignoring stream switch - ${stream.id} - ${stream.source}`
+            );
+          }
         }
       } else {
         // create a new stream
