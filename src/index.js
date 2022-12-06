@@ -15,6 +15,21 @@ import serverInfo, { collectLoad } from "./api/serverInfo.js";
 const server = express();
 const srvInfo = serverInfo();
 const coreCount = srvInfo.cpu.cores || 4;
+const workerCount = coreCount;
+
+const createNewWorker = () => {
+  const worker = cluster.fork();
+  Logger.log(`worker with pid '${worker.process?.pid}' had been started`);
+
+  worker.on("online", () => {
+    Logger.info(`worker has been started...`);
+  });
+
+  worker.on("exit", (code, signal) => {
+    Logger.warn(`worker was killed by signal: ${signal} with code: ${code}`);
+    createNewWorker();
+  });
+};
 
 if (cluster.isPrimary) {
   // single process code
@@ -55,29 +70,22 @@ if (cluster.isPrimary) {
   );
 
   // Fork workers.
-  for (var i = 0; i < coreCount; i++) {
-    const worker = cluster.fork();
-    Logger.log(`worker with pid '${worker.process?.pid}' had been started`);
-
-    worker.on("online", () => {
-      Logger.info(`worker has been started...`);
-    });
-
-    worker.on("exit", (code, signal) => {
-      if (signal) {
-        Logger.warn(`worker was killed by signal: ${signal}`);
-      } else if (code !== 0) {
-        Logger.warn(`worker exited with error code: ${code}`);
-      } else {
-        Logger.debug("worker exited normally");
-      }
-    });
+  for (var i = 0; i < workerCount; i++) {
+    createNewWorker();
   }
 
   setInterval(() => {
     Logger.debug("send sync...");
     const streams = global.sessions.getAll();
 
+    //check number of workers...
+    const currentWorkerCount = Object.keys(cluster.workers).length;
+    if (currentWorkerCount < workerCount) {
+      Logger.warn("Missing worker!", currentWorkerCount, workerCount);
+      createNewWorker();
+    }
+
+    // sync data to workers...
     for (const id in cluster.workers) {
       cluster.workers[id].send({
         cmd: "sync",
