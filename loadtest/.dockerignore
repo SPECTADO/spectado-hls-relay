@@ -1,0 +1,9 @@
+node_modules
+npm-debug.log
+_temp
+.dccache
+.env
+.vscode
+.github
+*/.DS_Store
+*/**/.DS_Store
