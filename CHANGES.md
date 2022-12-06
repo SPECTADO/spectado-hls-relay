@@ -1,5 +1,9 @@
 # HLS Relay server
 
+## 1.2.0
+
+- multi-core express server support
+
 ## 1.1.2
 
 - Fixed bug (waning in logs) when no User-Agent string is present
