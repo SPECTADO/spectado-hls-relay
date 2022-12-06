@@ -19,10 +19,10 @@ const workerCount = coreCount;
 
 const createNewWorker = () => {
   const worker = cluster.fork();
-  Logger.log(`worker with pid '${worker.process?.pid}' had been started`);
+  //Logger.log(`worker with pid '${worker.process?.pid}' had been started`);
 
   worker.on("online", () => {
-    Logger.info(`worker has been started...`);
+    Logger.info(`Worker has been started...`);
   });
 
   worker.on("exit", (code, signal) => {
