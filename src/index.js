@@ -8,8 +8,6 @@ import config from "./config.js";
 import Logger from "./Logger.js";
 import filesCleanup from "./workers/filesCleanup.js";
 import configFetch from "./workers/configFetch.js";
-import statsCleanup from "./workers/statsCleanup.js";
-import statsCallback from "./workers/statsCallback.js";
 import SessionManager from "./session-manager.js";
 import routes from "./routes.js";
 import serverInfo, { collectLoad } from "./api/serverInfo.js";
@@ -17,10 +15,6 @@ import serverInfo, { collectLoad } from "./api/serverInfo.js";
 const server = express();
 const srvInfo = serverInfo();
 const coreCount = srvInfo.cpu.cores || 4;
-
-global.sessions = [];
-global.listeners = [];
-global.listenersCleanup = [];
 
 if (cluster.isPrimary) {
   // single process code
@@ -41,19 +35,7 @@ if (cluster.isPrimary) {
   );
   Logger.log("------------------------------------------------");
 
-  // Fork workers.
-  for (var i = 0; i < coreCount; i++) {
-    const newNode = cluster.fork();
-    Logger.debug(`worker ${i} started`);
-  }
-
-  cluster.on("exit", (worker, code, signal) => {
-    Logger.info(`worker ${worker.process.pid} died`);
-  });
-
   global.sessions = new SessionManager();
-  global.listeners = [];
-  global.listenersCleanup = [];
 
   Logger.log(`FFMPEG binary path is "${config.ffmpeg}"`);
 
@@ -68,20 +50,63 @@ if (cluster.isPrimary) {
   );
   configFetch();
 
-  Logger.log(`Started cleanup worker for stats`);
-  statsCleanup();
-
-  Logger.log(`Started callback worker for stats`);
-  statsCallback();
-
   Logger.log(
     `Audio Normalization is ${config.codec.normalize ? "enabled" : "disabled"}`
   );
+
+  // Fork workers.
+  for (var i = 0; i < coreCount; i++) {
+    const worker = cluster.fork();
+    Logger.log(`worker with pid '${worker.process?.pid}' had been started`);
+
+    worker.on("online", () => {
+      Logger.info(`worker has been started...`);
+    });
+
+    worker.on("exit", (code, signal) => {
+      if (signal) {
+        Logger.warn(`worker was killed by signal: ${signal}`);
+      } else if (code !== 0) {
+        Logger.warn(`worker exited with error code: ${code}`);
+      } else {
+        Logger.debug("worker exited normally");
+      }
+
+      setTimeout(() => {
+        cluster.fork();
+      }, 1000);
+    });
+  }
+
+  setTimeout(() => {
+    Logger.debug("send sync...");
+    const streams = global.sessions.getAll();
+
+    for (const id in cluster.workers) {
+      cluster.workers[id].send({
+        cmd: "sync",
+        streams: streams.map((item) => {
+          return {
+            id: item.id,
+            name: item.name ?? false,
+            //link: `${baseUrl}/live/${item.id}/playlist.m3u8`,
+            pid: item.ref?.ffmpeg_exec?.pid,
+            started: item.ref?.started,
+          };
+        }),
+      });
+    }
+  }, 4000);
 } else {
   // run in cluster
+  global.streams = [];
 
-  cluster.on("message", (msg) => {
-    Logger.debug("Message", msg);
+  process.on("message", (msg) => {
+    Logger.debug("worker msg", msg?.cmd);
+
+    if (msg?.cmd === "sync") {
+      global.streams = msg.streams;
+    }
   });
 
   try {
