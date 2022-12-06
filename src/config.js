@@ -29,7 +29,7 @@ const config = {
 
   hls: {
     root: env.SHLS_MEDIAROOT || "/tmp/hls",
-    hlsTime: 10,
+    hlsTime: 8,
     hlsListSize: 6,
   },
 };
