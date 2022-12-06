@@ -18,32 +18,34 @@ const netSpeed = netInfo.reduce(
 );
 //const netInterfaces = await si.networkInterfaces();
 
-setInterval(function () {
-  si.networkStats("*").then((data) => {
-    //Logger.debug(data);
-    try {
-      const txSpeed = Math.round(
-        (data.reduce((tx, int) => tx + parseFloat(int.tx_sec), 0) /
-          1024 /
-          1024) *
-          8
-      );
-      const rxSpeed = Math.round(
-        (data.reduce((rx, int) => rx + parseFloat(int.rx_sec), 0) /
-          1024 /
-          1024) *
-          8
-      );
-      netLoad = Math.round((txSpeed / netSpeed) * 1000) / 10;
-      netTx = txSpeed;
-      netRx = rxSpeed;
+const collectLoad = () => {
+  setInterval(function () {
+    si.networkStats("*").then((data) => {
+      //Logger.debug(data);
+      try {
+        const txSpeed = Math.round(
+          (data.reduce((tx, int) => tx + parseFloat(int.tx_sec), 0) /
+            1024 /
+            1024) *
+            8
+        );
+        const rxSpeed = Math.round(
+          (data.reduce((rx, int) => rx + parseFloat(int.rx_sec), 0) /
+            1024 /
+            1024) *
+            8
+        );
+        netLoad = Math.round((txSpeed / netSpeed) * 1000) / 10;
+        netTx = txSpeed;
+        netRx = rxSpeed;
 
-      Logger.debug("LOAD", { netLoad, txSpeed, rxSpeed, netSpeed });
-    } catch (e) {
-      Logger.debug("networkStats error", e);
-    }
-  });
-}, 5000);
+        Logger.debug("LOAD", { netLoad, txSpeed, rxSpeed, netSpeed });
+      } catch (e) {
+        Logger.debug("networkStats error", e);
+      }
+    });
+  }, 5000);
+};
 
 const serverInfo = () => {
   const cpuLoad = os.loadavg();
@@ -64,9 +66,11 @@ const serverInfo = () => {
     cpu: {
       load: cpuLoad,
       arch: os.arch(),
+      cores: os.cpus().length,
     },
     platform: os.platform(),
   };
 };
 
 export default serverInfo;
+export { serverInfo, collectLoad };
