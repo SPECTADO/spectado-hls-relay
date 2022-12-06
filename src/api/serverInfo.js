@@ -1,4 +1,5 @@
 import os from "os";
+import cluster from "cluster";
 // import config from "../config.js";
 import si from "systeminformation";
 import { readFile } from "fs/promises";
@@ -8,9 +9,6 @@ const json = JSON.parse(
   await readFile(new URL("../../package.json", import.meta.url))
 );
 
-let netLoad = -1;
-let netTx = -1;
-let netRx = -1;
 const netInfo = await si.networkInterfaces("*"); // .speed - Mbit / s
 const netSpeed = netInfo.reduce(
   (speed, int) => (int.speed > speed ? int.speed : speed),
@@ -18,7 +16,13 @@ const netSpeed = netInfo.reduce(
 );
 //const netInterfaces = await si.networkInterfaces();
 
+let netLoad = -1;
+let netTx = -1;
+let netRx = -1;
+
 const collectLoad = () => {
+  Logger.log("Starting load collector...");
+
   setInterval(function () {
     si.networkStats("*").then((data) => {
       //Logger.debug(data);
@@ -39,6 +43,18 @@ const collectLoad = () => {
         netTx = txSpeed;
         netRx = rxSpeed;
 
+        for (const id in cluster.workers) {
+          cluster.workers[id].send({
+            cmd: "loadSync",
+            payload: {
+              netLoad,
+              netTx,
+              netRx,
+              netSpeed,
+            },
+          });
+        }
+
         Logger.debug("LOAD", { netLoad, txSpeed, rxSpeed, netSpeed });
       } catch (e) {
         Logger.debug("networkStats error", e);
@@ -46,6 +62,19 @@ const collectLoad = () => {
     });
   }, 5000);
 };
+
+if (cluster.isWorker) {
+  process.on("message", (msg) => {
+    //Logger.debug("worker msg", msg?.cmd);
+
+    if (msg?.cmd === "loadSync") {
+      //Logger.debug("sync load data from primary node...", msg.payload);
+      netLoad = msg.payload?.netLoad || 0;
+      netTx = msg.payload?.netTx || 0;
+      netRx = msg.payload?.netRx || 0;
+    }
+  });
+}
 
 const serverInfo = () => {
   const cpuLoad = os.loadavg();

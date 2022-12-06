@@ -71,14 +71,10 @@ if (cluster.isPrimary) {
       } else {
         Logger.debug("worker exited normally");
       }
-
-      setTimeout(() => {
-        cluster.fork();
-      }, 1000);
     });
   }
 
-  setTimeout(() => {
+  setInterval(() => {
     Logger.debug("send sync...");
     const streams = global.sessions.getAll();
 
@@ -96,13 +92,13 @@ if (cluster.isPrimary) {
         }),
       });
     }
-  }, 4000);
-} else {
+  }, 5000);
+} else if (cluster.isWorker) {
   // run in cluster
   global.streams = [];
 
   process.on("message", (msg) => {
-    Logger.debug("worker msg", msg?.cmd);
+    //Logger.debug("worker msg", msg?.cmd);
 
     if (msg?.cmd === "sync") {
       global.streams = msg.streams;
