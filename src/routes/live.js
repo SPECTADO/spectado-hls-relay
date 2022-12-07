@@ -4,7 +4,7 @@ import config from "../config.js";
 
 const router = express.Router();
 
-// router.all("/:streamId/init.mp4", (req, _res, next) => {next();});
+//router.all("/:streamId/init.mp4", (req, _res, next) => { const streamId = req.params?.streamId; Logger.debug(`New listener of stream '${streamId}'`); next(); });
 
 router.all("*.m3u8", (req, res, next) => {
   const ct = config.hls.hlsTime || 5;

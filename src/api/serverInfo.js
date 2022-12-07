@@ -19,11 +19,12 @@ const netSpeed = netInfo.reduce(
 let netLoad = -1;
 let netTx = -1;
 let netRx = -1;
+let countListeners = -1;
 
 const collectLoad = () => {
   Logger.log("Starting load collector...");
 
-  setInterval(function () {
+  setInterval(() => {
     si.networkStats("*").then((data) => {
       //Logger.debug(data);
       try {
@@ -61,6 +62,31 @@ const collectLoad = () => {
       }
     });
   }, 5000);
+
+  setInterval(() => {
+    const pids = Object.values(cluster.workers).reduce(
+      (pids, worker) => [...pids, worker?.process?.pid],
+      []
+    );
+    //Logger.debug(pids);
+
+    si.networkConnections().then((data) => {
+      //Logger.debug(data[0]);
+      const connections = data.filter(
+        (item) => pids.includes(item.pid) && item.state === "ESTABLISHED"
+      );
+      const listeners = connections.length;
+
+      for (const id in cluster.workers) {
+        cluster.workers[id].send({
+          cmd: "listenersSync",
+          payload: {
+            listeners,
+          },
+        });
+      }
+    });
+  }, 30000);
 };
 
 if (cluster.isWorker) {
@@ -73,18 +99,22 @@ if (cluster.isWorker) {
       netTx = msg.payload?.netTx || 0;
       netRx = msg.payload?.netRx || 0;
     }
+
+    if (msg?.cmd === "listenersSync") {
+      //Logger.debug("sync load data from primary node...", msg.payload);
+      countListeners = msg.payload?.listeners || 0;
+    }
   });
 }
 
 const serverInfo = () => {
   const cpuLoad = os.loadavg();
-  let totalListeners = global?.listeners?.length ?? 0;
 
   return {
     server: json.name,
     version: json.version,
     load: netLoad || 0,
-    listeners: totalListeners,
+    listeners: countListeners || 0,
     memory: { free: os.freemem(), total: os.totalmem() },
     uptime: os.uptime(),
     eth: {

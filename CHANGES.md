@@ -1,8 +1,10 @@
 # HLS Relay server
 
-## 1.2.0
+## 1.2.1
 
-- multi-core express server support
+- multi-core support for running express web server
+- can handle much greater load
+- listeners count is now updated once every 30 seconds and is current number of listeners (approximated)
 
 ## 1.1.2
 
