@@ -8,6 +8,8 @@
 
 This simple server will fetch any remote or local audio file and will transcode it to live HLS stream. You can even use live stream as a source, making this server for example live HLS transcoder for Icecast server.
 
+HLS relay server supports multi-core workers and can handle tens of thousands or even hundreds of thousands listeners on a single instance (depending on number of cores).
+
 The HLS Relay requires ffmpeg binary to be installed on the system. You can download binary using NPN or YARN. Refer the ENV values to setup path to ffmpeg.
 
 ```bash
