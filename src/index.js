@@ -30,6 +30,17 @@ const createNewWorker = () => {
     );
     createNewWorker();
   });
+
+  worker.on("message", (msg) => {
+    //Logger.debug("worker msg", msg?.cmd);
+    // receive report of listeners from workers
+    if (msg?.cmd === "listenersLive") {
+      const pid = msg?.payload?.pid;
+      if (pid) {
+        global.listenersLive[msg.payload.pid] = msg.payload.listeners;
+      }
+    }
+  });
 };
 
 const syncWorkerData = () => {
@@ -73,6 +84,7 @@ if (cluster.isPrimary) {
   Logger.log("------------------------------------------------");
 
   global.sessions = new SessionManager();
+  global.listenersLive = {};
 
   Logger.log(`FFMPEG binary path is "${config.ffmpeg}"`);
 

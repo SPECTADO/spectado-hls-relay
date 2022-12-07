@@ -44,6 +44,14 @@ const collectLoad = () => {
         netTx = txSpeed;
         netRx = rxSpeed;
 
+        const listenersNow = Object.values(global.listenersLive).reduce(
+          (count, item) => count + parseInt(item),
+          0
+        );
+
+        const listenersPids = Object.keys(global.listenersLive);
+        let clusterPids = [];
+
         for (const id in cluster.workers) {
           cluster.workers[id].send({
             cmd: "loadSync",
@@ -54,39 +62,31 @@ const collectLoad = () => {
               netSpeed,
             },
           });
+
+          cluster.workers[id].send({
+            cmd: "listenersSync",
+            payload: {
+              listeners: listenersNow,
+            },
+          });
+
+          clusterPids.push(cluster.workers[id].process.pid.toString());
         }
 
+        listenersPids.forEach((pid) => {
+          if (!clusterPids.includes(pid)) {
+            Logger.debug(`Orphan PID in stats, ${pid}`);
+            delete global.listenersLive[pid];
+          }
+        });
+
+        //Logger.debug(listenersNow, global.listenersLive);
         //Logger.debug("LOAD", { netLoad, txSpeed, rxSpeed, netSpeed });
       } catch (e) {
         Logger.debug("networkStats error", e);
       }
     });
   }, 5000);
-
-  setInterval(() => {
-    const pids = Object.values(cluster.workers).reduce(
-      (pids, worker) => [...pids, worker?.process?.pid],
-      []
-    );
-    //Logger.debug(pids);
-
-    si.networkConnections().then((data) => {
-      //Logger.debug(data[0]);
-      const connections = data.filter(
-        (item) => pids.includes(item.pid) && item.state === "ESTABLISHED"
-      );
-      const listeners = connections.length;
-
-      for (const id in cluster.workers) {
-        cluster.workers[id].send({
-          cmd: "listenersSync",
-          payload: {
-            listeners,
-          },
-        });
-      }
-    });
-  }, 30000);
 };
 
 if (cluster.isWorker) {
