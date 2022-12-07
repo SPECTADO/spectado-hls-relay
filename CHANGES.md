@@ -2,13 +2,16 @@
 
 ## 1.2.2
 
+- fixed listeners count (server) to count only connected listeners
+
+## 1.2.0
+
 - multi-core support for running express web server
 - can handle much greater load
-- fixed listeners count (server) to count only connected listeners
 
 ## 1.1.2
 
-- Fixed bug (waning in logs) when no User-Agent string is present
+- Fixed bug (warning in logs) when no User-Agent string is present
 
 ## 1.1.1
 
