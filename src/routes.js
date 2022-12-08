@@ -3,6 +3,7 @@ import express from "express";
 import routesBasic from "./routes/basic.js";
 import routesApi from "./routes/api.js";
 import routesLive from "./routes/live.js";
+import routesMrtg from "./routes/mrtg.js";
 
 // import Logger from "./Logger.js";
 
@@ -27,6 +28,7 @@ router.all("*", (req, res, next) => {
 
 router.use("/", routesBasic);
 router.use("/api", routesApi);
+router.use("/mrtg", routesMrtg);
 router.use("/live", routesLive);
 
 export default router;
