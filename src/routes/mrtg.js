@@ -30,7 +30,7 @@ router.route("/traffic").get(async (req, res) => {
   const info = serverInfo();
 
   res.send(
-    `${info.eth.tx}\r\n${info.eth.rx}\r\Mbps\r\nCurrent traffic in Mbps`
+    `${info.eth.rx}\r\n${info.eth.tx}\r\Mbps\r\nCurrent traffic in Mbps`
   );
 });
 
