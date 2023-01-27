@@ -1,5 +1,9 @@
 # HLS Relay server
 
+## 1.3.0
+
+- added listeners count per stream
+
 ## 1.2.3
 
 - added mrtg specific API endpoints for better external monitoring

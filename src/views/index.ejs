@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://embed-player.spectado.com/assets/index.js" defer></script>
     <title>spectado-hls-relay</title>
   </head>
   <body>
@@ -26,6 +27,7 @@
               <th>Link</th>
               <th>State</th>
               <th>Live</th>
+              <th>Listeners</th>
               <th>&nbsp;</th>
             </tr>
           </thead>
@@ -39,8 +41,18 @@
               <td><%= streams[i]["link"] %></td>
               <td><%= streams[i]["state"] %></td>
               <td><%= streams[i]["isLive"] ? 'YES':'no' %></td>
+              <td><%= streams[i]["listeners"] %></td>
+              <!--<td>
+                <spectado-player
+                  src="<%= streams[i]['link'] %>?platform=edge&fs_project=dev"
+                  type="hls"
+                  color="#00205b"
+                  background-color="#ffffff"
+                  width="40px"
+                />
+              </td>-->
               <td>
-                <button  type="button" onClick="play('<%= streams[i]["link"] %>','<%= streams[i]["id"] %>','<%= streams[i]["name"] %>')" class="py-2 px-4 bg-blue-500 text-white text-xs font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75">
+                <button  type="button" onClick="play('<%= streams[i]["link"] %>?platform=edge&fs_project=dev','<%= streams[i]["id"] %>','<%= streams[i]["name"] %>')" class="py-2 px-4 bg-blue-500 text-white text-xs font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75">
                   PLAY
                 </button> 
               </td>

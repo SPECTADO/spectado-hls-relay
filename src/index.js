@@ -11,6 +11,8 @@ import configFetch from "./workers/configFetch.js";
 import SessionManager from "./session-manager.js";
 import routes from "./routes.js";
 import serverInfo, { collectLoad } from "./api/serverInfo.js";
+import { countListenersPerStream } from "./api/countListeners.js";
+import dayjs from "dayjs";
 
 const server = express();
 const srvInfo = serverInfo();
@@ -38,6 +40,7 @@ const createNewWorker = () => {
       const pid = msg?.payload?.pid;
       if (pid) {
         global.listenersLive[msg.payload.pid] = msg.payload.listeners;
+        global.listenersStack[msg.payload.pid] = msg.payload.listenersStack;
       }
     }
   });
@@ -58,6 +61,8 @@ const syncWorkerData = () => {
           state: item.config.state,
           pid: item.ref?.ffmpeg_exec?.pid,
           started: item.ref?.started,
+          listeners: countListenersPerStream(item.id),
+          // dbg: global.listenersStack,
         };
       }),
     });
@@ -85,6 +90,7 @@ if (cluster.isPrimary) {
 
   global.sessions = new SessionManager();
   global.listenersLive = {};
+  global.listenersStack = {};
 
   Logger.log(`FFMPEG binary path is "${config.ffmpeg}"`);
 

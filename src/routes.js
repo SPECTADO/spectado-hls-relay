@@ -2,6 +2,7 @@ import express from "express";
 //import config from "./config.js";
 import routesBasic from "./routes/basic.js";
 import routesApi from "./routes/api.js";
+import routeDebug from "./routes/debug.js";
 import routesLive from "./routes/live.js";
 import routesMrtg from "./routes/mrtg.js";
 
@@ -28,6 +29,7 @@ router.all("*", (req, res, next) => {
 
 router.use("/", routesBasic);
 router.use("/api", routesApi);
+router.use("/debug", routeDebug);
 router.use("/mrtg", routesMrtg);
 router.use("/live", routesLive);
 
