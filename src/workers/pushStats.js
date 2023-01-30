@@ -15,7 +15,7 @@ const doPushStats = async () => {
       });
     });
 
-    Logger.debug("pushing stats back to API...", statsData);
+    //Logger.debug("pushing stats back to API...", statsData);
     const resp = await fetch(config.stats.pushUrl, {
       method: "post",
       body: JSON.stringify(statsData),
