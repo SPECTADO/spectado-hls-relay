@@ -8,11 +8,12 @@ import config from "./config.js";
 import Logger from "./Logger.js";
 import filesCleanup from "./workers/filesCleanup.js";
 import configFetch from "./workers/configFetch.js";
+import pushStats from "./workers/pushStats.js";
 import SessionManager from "./session-manager.js";
 import routes from "./routes.js";
 import serverInfo, { collectLoad } from "./api/serverInfo.js";
 import { countListenersPerStream } from "./api/countListeners.js";
-import dayjs from "dayjs";
+//import dayjs from "dayjs";
 
 const server = express();
 const srvInfo = serverInfo();
@@ -104,6 +105,8 @@ if (cluster.isPrimary) {
     `Started config fetch worker from source "${config.streamSource}"`
   );
   configFetch();
+
+  pushStats();
 
   Logger.log(
     `Audio Normalization is ${config.codec.normalize ? "enabled" : "disabled"}`

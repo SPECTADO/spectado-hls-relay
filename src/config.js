@@ -32,6 +32,12 @@ const config = {
     hlsTime: 8,
     hlsListSize: 5,
   },
+
+  stats: {
+    enabled: env.SHLS_STATS_URL && env.SHLS_STATS_INTERVAL > 5 ? true : false,
+    interval: env.SHLS_STATS_INTERVAL || 60,
+    pushUrl: env.SHLS_STATS_URL || "",
+  },
 };
 
 export default config;

@@ -3,6 +3,7 @@ import fs from "fs";
 import config from "../config.js";
 import Logger from "../Logger.js";
 import cluster from "cluster";
+import { exit } from "process";
 const router = express.Router();
 
 let listenersStack = [];
@@ -28,68 +29,37 @@ if (cluster.isWorker) {
 
 router.all("*.m3u8", (req, res, _next) => {
   const ct = config.hls.hlsTime || 5;
-
-  const filename = `${config.hls.root}${req.params[0]}.m3u8`;
-  fs.readFile(filename, "utf8", (err, playlistData) => {
-    if (err) {
-      res.status(500).send("");
-      Logger.error("playlist error", err);
-    }
-
-    const queryParam = new URLSearchParams(req.query).toString();
-    res
-      .header(
-        "Cache-Control",
-        `max-age:${ct},s-max-age=${ct},must-revalidate,proxy-revalidate,stale-while-revalidate`
-      )
-      .status(200)
-      .send(playlistData.replaceAll(".m4s", `.m4s?${queryParam}`));
-  });
-
-  /*
-  const streamName = req.params[0]?.split("/")?.at(1);
-
-  const listenerObject = {
-    ts: Date.now(),
-    seg: {
-      id: streamName,
-      platform: req.query.platform,
-      fs_project: req.query.fs_project,
-    },
-  };
-  //Logger.debug(req.params, req.query, streamName, listenerObject);
-  listenersStack.push(listenerObject);
-
   res.header(
     "Cache-Control",
     `max-age:${ct},s-max-age=${ct},must-revalidate,proxy-revalidate,stale-while-revalidate`
   );
 
-  next();
-
-  
   const filename = `${config.hls.root}${req.params[0]}.m3u8`;
   fs.readFile(filename, "utf8", (err, playlistData) => {
     if (err) {
-      res.status(500).send("");
-      Logger.error("playlist error", err);
+      switch (err.errno) {
+        case -2:
+          res.status(404).send("Not Found");
+          break;
+        default:
+          res.status(500).send("Error");
+          Logger.error("playlist error", err);
+          break;
+      }
+      exit();
     }
 
     const queryParam = new URLSearchParams(req.query).toString();
-    res
-      .header(
-        "Cache-Control",
-        `max-age:${ct},s-max-age=${ct},must-revalidate,proxy-revalidate,stale-while-revalidate`
-      )
-      .status(200)
-      .send(playlistData.replaceAll(".m4s", `.m4s?${queryParam}`));
+    res.status(200).send(playlistData.replaceAll(".m4s", `.m4s?${queryParam}`));
   });
-  */
 });
 
 router.all("*.m4s", (req, res, next) => {
+  const ct = (config.hls.hlsTime || 5) * 10;
+
   try {
     const streamName = req.params[0]?.split("/")?.at(1);
+
     const listenerObject = {
       ts: Date.now(),
       seg: {
@@ -104,8 +74,9 @@ router.all("*.m4s", (req, res, next) => {
 
   res.header(
     "Cache-Control",
-    `max-age:120,s-max-age=120,stale-while-revalidate`
+    `max-age:${ct},s-max-age=${ct},must-revalidate,proxy-revalidate,stale-while-revalidate`
   );
+
   next();
 });
 
