@@ -41,7 +41,42 @@ class FfmpegManager {
       }
     } catch {}
 
-    // build FFMPEG arguments
+    // preroll [start]
+    /*
+    // build FFMPEG arguments - preroll
+    let argv_spot = [];
+    argv_spot.push("-re");
+    argv_spot.push("-i");
+    argv_spot.push("./src/assets/preroll.m4a");
+    argv_spot.push("-acodec");
+    argv_spot.push(config.codec.type);
+    argv_spot.push("-ab");
+    argv_spot.push(config.codec.bitrate);
+    argv_spot.push("-ac");
+    argv_spot.push(config.codec.channels);
+    argv_spot.push("-ar");
+    argv_spot.push(config.codec.sampleRate);
+    if (config.codec.normalize) {
+      argv_spot.push("-af");
+      argv_spot.push("loudnorm=I=-16:LRA=12:TP=-1.5");
+    }
+    argv_spot.push("-f");
+    argv_spot.push("hls");
+    argv_spot.push("-hls_segment_type");
+    argv_spot.push("fmp4");
+    argv_spot.push("-hls_time");
+    argv_spot.push(999);
+    argv_spot.push("-hls_segment_filename");
+    argv_spot.push(`${hlsPath}/preroll-%1d.m4s`);
+    argv_spot.push("-hls_fmp4_init_filename");
+    argv_spot.push(`preroll-init.mp4`);
+    argv_spot.push(`${hlsPath}/preroll.m3u8`);
+    // [end] build FFMPEG arguments - preroll
+    spawn(config.ffmpeg, argv_spot);
+    */
+    // preroll [end]
+
+    // build FFMPEG arguments - LIVE
     let argv = [];
     argv.push("-loglevel");
     argv.push("info");

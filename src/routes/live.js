@@ -50,7 +50,10 @@ router.all("*.m3u8", (req, res, _next) => {
     }
 
     const queryParam = new URLSearchParams(req.query).toString();
-    res.status(200).send(playlistData.replaceAll(".m4s", `.m4s?${queryParam}`));
+    res.status(200).send(
+      playlistData.replaceAll(".m4s", `.m4s?${queryParam}`)
+      //.replace('#EXT-X-MAP:URI="init.mp4"','#EXT-X-MAP:URI="init.mp4"\r\n#EXTINF:12,\r\npreroll.m4s\r\n#EXT-X-DISCONTINUITY')
+    );
   });
 });
 
