@@ -50,10 +50,25 @@ router.all("*.m3u8", (req, res, _next) => {
     }
 
     const queryParam = new URLSearchParams(req.query).toString();
-    res.status(200).send(
-      playlistData.replaceAll(".m4s", `.m4s?${queryParam}`)
-      //.replace('#EXT-X-MAP:URI="init.mp4"','#EXT-X-MAP:URI="init.mp4"\r\n#EXTINF:12,\r\npreroll.m4s\r\n#EXT-X-DISCONTINUITY')
+    const playlistWithQueryParams = playlistData.replaceAll(
+      ".m4s",
+      `.m4s?${queryParam}`
     );
+
+    if (req.params[0] === "/xx-fallback/playlist") {
+      // temp test
+      res
+        .status(200)
+        .send(
+          playlistWithQueryParams.replace(
+            '#EXT-X-MAP:URI="init.mp4"',
+            '#EXT-X-MAP:URI="init.mp4"\r\n#EXTINF:12,\r\npreroll.m4s\r\n#EXT-X-DISCONTINUITY'
+          )
+        );
+      return;
+    }
+
+    res.status(200).send(playlistWithQueryParams);
   });
 });
 

@@ -42,7 +42,6 @@ class FfmpegManager {
     } catch {}
 
     // preroll [start]
-    /*
     // build FFMPEG arguments - preroll
     let argv_spot = [];
     argv_spot.push("-re");
@@ -67,13 +66,14 @@ class FfmpegManager {
     argv_spot.push("-hls_time");
     argv_spot.push(999);
     argv_spot.push("-hls_segment_filename");
-    argv_spot.push(`${hlsPath}/preroll-%1d.m4s`);
+    argv_spot.push(`${hlsPath}/preroll.m4s`);
     argv_spot.push("-hls_fmp4_init_filename");
     argv_spot.push(`preroll-init.mp4`);
+    argv_spot.push("-hls_flags");
+    argv_spot.push("single_file");
     argv_spot.push(`${hlsPath}/preroll.m3u8`);
     // [end] build FFMPEG arguments - preroll
     spawn(config.ffmpeg, argv_spot);
-    */
     // preroll [end]
 
     // build FFMPEG arguments - LIVE

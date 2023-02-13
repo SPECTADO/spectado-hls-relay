@@ -3,6 +3,7 @@
 ## 1.3.0
 
 - added listeners count per stream
+- preroll spot test on xx-fallback stream
 
 ## 1.2.3
 
