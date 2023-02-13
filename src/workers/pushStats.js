@@ -46,8 +46,11 @@ const pushStats = () => {
       config.stats.interval
     }`
   );
-  setInterval(() => {
-    doPushStats();
-  }, config.stats.interval * 1000);
+
+  if (config.stats.enabled) {
+    setInterval(() => {
+      doPushStats();
+    }, config.stats.interval * 1000);
+  }
 };
 export default pushStats;
