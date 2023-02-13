@@ -46,7 +46,7 @@ router.all("*.m3u8", (req, res, _next) => {
           Logger.error("playlist error", err);
           break;
       }
-      exit();
+      return;
     }
 
     const queryParam = new URLSearchParams(req.query).toString();
