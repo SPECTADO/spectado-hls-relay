@@ -26,11 +26,12 @@ jobs:
         uses: martinbeentjes/npm-get-version-action@main
 
       - name: Build Docker image
+        id: packageVersion
         uses: docker/build-push-action@v2
         with:
           context: .
           push: true
-          tags: ${{ env.IMAGE_NAME }}:${{ current-version }}
+          tags: ${{ env.IMAGE_NAME }}:${{ steps.packageVersion.outputs.current-version }}
 
       - name: Login to docker-hub
         uses: docker/login-action@v2
@@ -43,14 +44,14 @@ jobs:
         uses: docker/metadata-action@v4
         with:
           images: ${{ env.IMAGE_NAME }}
-          tags: type=semver,pattern={{version}},value=${{ current-version }}
+          tags: type=semver,pattern={{version}},value=${{ steps.packageVersion.outputs.current-version }}
 
       - name: Build and push
         uses: docker/build-push-action@v3
         with:
           context: .
           push: true
-          build-args: VERSION=${{ current-version }}
+          build-args: VERSION=${{ steps.packageVersion.outputs.current-version }}
           platforms: linux/amd64
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
