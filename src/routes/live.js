@@ -3,7 +3,6 @@ import fs from "fs";
 import config from "../config.js";
 import Logger from "../Logger.js";
 import cluster from "cluster";
-import { exit } from "process";
 const router = express.Router();
 
 let listenersStack = [];
