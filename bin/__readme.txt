@@ -1,0 +1,1 @@
+Fetch ffmpeg binary here, you can use `npm run ffmpeg:linux` to download fresh linux build.
