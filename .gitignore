@@ -4,3 +4,4 @@ _temp
 .dccache
 __src
 .DS_Store
+bin/
