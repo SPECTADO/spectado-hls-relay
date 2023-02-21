@@ -8,7 +8,7 @@ const doPushStats = async () => {
     Object.values(global.listenersStack).forEach((nodeData) => {
       nodeData?.forEach((item) => {
         const streamId = item?.seg?.id;
-        const segmentId = `${item?.seg?.platform}-${item?.seg?.fs_project}`;
+        const segmentId = `${item?.seg?.fs_project}`;
         if (!statsData[streamId]) statsData[streamId] = [];
         if (!statsData[streamId][segmentId]) statsData[streamId][segmentId] = 0;
         statsData[streamId][segmentId]++;

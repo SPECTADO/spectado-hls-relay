@@ -1,5 +1,10 @@
 # HLS Relay server
 
+## 1.3.1
+
+- preroll test
+- support for "fs_project" query param for segmentations of stats
+
 ## 1.3.0
 
 - added listeners count per stream

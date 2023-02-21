@@ -48,23 +48,20 @@ router.all("*.m3u8", (req, res, _next) => {
       return;
     }
 
-    const queryParam = new URLSearchParams(req.query).toString();
-    const playlistWithQueryParams = playlistData.replaceAll(
-      ".m4s",
-      `.m4s?${queryParam}`
-    );
+    let playlistWithQueryParams = playlistData;
 
-    if (req.params[0] === "/xx-fallback/playlist") {
-      // temp test
-      res
-        .status(200)
-        .send(
-          playlistWithQueryParams.replace(
-            '#EXT-X-MAP:URI="init.mp4"',
-            '#EXT-X-MAP:URI="init.mp4"\r\n#EXTINF:12,\r\npreroll.m4s\r\n#EXT-X-DISCONTINUITY'
-          )
-        );
-      return;
+    if (req.query?.fs_project) {
+      playlistWithQueryParams = playlistWithQueryParams.replaceAll(
+        ".m4s",
+        `.m4s?fs_project=${req.query.fs_project}`
+      );
+    }
+
+    if (req.query?.preroll) {
+      playlistWithQueryParams = playlistWithQueryParams.replace(
+        '#EXT-X-MAP:URI="init.mp4"',
+        '#EXT-X-MAP:URI="init.mp4"\r\n#EXTINF:12,\r\npreroll.m4s\r\n#EXT-X-DISCONTINUITY'
+      );
     }
 
     res.status(200).send(playlistWithQueryParams);
@@ -81,7 +78,6 @@ router.all("*.m4s", (req, res, next) => {
       ts: Date.now(),
       seg: {
         id: streamName,
-        platform: req.query.platform,
         fs_project: req.query.fs_project,
       },
     };
