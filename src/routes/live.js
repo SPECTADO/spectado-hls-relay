@@ -57,7 +57,8 @@ router.all("*.m3u8", (req, res, _next) => {
       );
     }
 
-    if (req.query?.preroll) {
+    //Logger.info("TEST", req.params);
+    if (req.query?.preroll || req.params[0] === "/cs-V94LwDW89x/playlist") {
       playlistWithQueryParams = playlistWithQueryParams.replace(
         '#EXT-X-MAP:URI="init.mp4"',
         '#EXT-X-MAP:URI="init.mp4"\r\n#EXTINF:12,\r\npreroll.m4s\r\n#EXT-X-DISCONTINUITY'
