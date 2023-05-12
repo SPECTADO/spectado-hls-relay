@@ -1,24 +1,28 @@
 import fetch from "node-fetch";
 import Logger from "../Logger.js";
 import config from "../config.js";
+import dayjs from "dayjs";
 
 const doPushStats = async () => {
   try {
-    let statsData = [];
+    let statsData = {};
     Object.values(global.listenersStack).forEach((nodeData) => {
       nodeData?.forEach((item) => {
         const streamId = item?.seg?.id;
         const segmentId = `${item?.seg?.fs_project}`;
-        if (!statsData[streamId]) statsData[streamId] = [];
+        if (!statsData[streamId]) statsData[streamId] = {};
         if (!statsData[streamId][segmentId]) statsData[streamId][segmentId] = 0;
         statsData[streamId][segmentId]++;
       });
     });
 
-    //Logger.debug("pushing stats back to API...", statsData);
+    //Logger.info("pushing stats back to API...");
     const resp = await fetch(config.stats.pushUrl, {
       method: "post",
-      body: JSON.stringify(statsData),
+      body: JSON.stringify({
+        datetime: dayjs().format(),
+        stats: statsData,
+      }),
     });
 
     if (resp.status !== 200) {

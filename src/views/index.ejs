@@ -76,7 +76,7 @@
 
         function play(mediaSrc, title,subtitle) {
           const link = hlsPlayerLink(mediaSrc, title,subtitle);
-          window.open(link, "spectado-hls-player", "height=100, width=400");
+          window.open(`${link}&debug=1`, "spectado-hls-player", "height=100, width=400");
         }
       </script>
   </body>

@@ -2,6 +2,10 @@
 
 ## 1.3.1
 
+- support for the new stats
+
+## 1.3.1
+
 - preroll test
 - support for "fs_project" query param for segmentations of stats
 
