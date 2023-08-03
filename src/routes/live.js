@@ -3,6 +3,7 @@ import fs from "fs";
 import config from "../config.js";
 import Logger from "../Logger.js";
 import cluster from "cluster";
+import { getPrerollKey } from "../helpers/preroll.js";
 const router = express.Router();
 
 let listenersStack = [];
@@ -27,13 +28,15 @@ if (cluster.isWorker) {
 //router.all("/:streamId/init.mp4", (req, _res, next) => { const streamId = req.params?.streamId; Logger.debug(`New listener of stream '${streamId}'`); next(); });
 
 router.all("*.m3u8", (req, res, _next) => {
+  const playlistPath = req.params[0];
   const ct = config.hls.hlsTime || 5;
+
   res.header(
     "Cache-Control",
     `max-age:${ct},s-max-age=${ct},must-revalidate,proxy-revalidate,stale-while-revalidate`
   );
 
-  const filename = `${config.hls.root}${req.params[0]}.m3u8`;
+  const filename = `${config.hls.root}${playlistPath}.m3u8`;
   fs.readFile(filename, "utf8", (err, playlistData) => {
     if (err) {
       switch (err.errno) {
@@ -57,13 +60,20 @@ router.all("*.m3u8", (req, res, _next) => {
       );
     }
 
-    //Logger.info("TEST", req.params);
-    if (req.query?.preroll) {
+    // inject pre-roll
+    //todo: find existing preroll key based on userdata
+    const streamName = playlistPath?.split("/")?.at(1);
+    const prerollKey = getPrerollKey(streamName, req);
+    const prerollFile = `preroll-${prerollKey}.m4s`;
+    const hasPreroll = prerollKey ? true : false;
+
+    if (hasPreroll) {
       playlistWithQueryParams = playlistWithQueryParams.replace(
         '#EXT-X-MAP:URI="init.mp4"',
-        '#EXT-X-MAP:URI="init.mp4"\r\n#EXTINF:12,\r\npreroll.m4s\r\n#EXT-X-DISCONTINUITY'
+        `#EXT-X-MAP:URI="init.mp4"\r\n#EXTINF:12,\r\n${prerollFile}\r\n#EXT-X-DISCONTINUITY`
       );
     }
+    // [end] inject pre-roll
 
     res.status(200).send(playlistWithQueryParams);
   });
@@ -73,7 +83,8 @@ router.all("*.m4s", (req, res, next) => {
   const ct = (config.hls.hlsTime || 5) * 10;
 
   try {
-    const streamName = req.params[0]?.split("/")?.at(1);
+    const playlistPath = req.params[0];
+    const streamName = playlistPath?.split("/")?.at(1);
 
     const listenerObject = {
       ts: Date.now(),

@@ -2,7 +2,7 @@
 
 ## 1.4.0
 
--
+- pre-roll spot injection (test)
 
 ## 1.3.5
 

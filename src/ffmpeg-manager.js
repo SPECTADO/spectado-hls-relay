@@ -23,61 +23,9 @@ class FfmpegManager {
     this.watchdog = null;
   }
 
-  start() {
-    if (global.sessions.get(this.config.id) !== null) {
-      Logger.error(
-        `Can't start ffmpeg session - session with id "${this.config.id}" already exists!`
-      );
-      return false;
-    }
-
-    // create the HLS folder
-    const hlsPath = `${config.hls.root}/${this.config.id}`;
-    mkdirp.sync(hlsPath);
-    try {
-      const newPlaylistPath = `${hlsPath}/playlist.m3u8`;
-      if (!fs.existsSync(newPlaylistPath)) {
-        fs.closeSync(fs.openSync(newPlaylistPath, "w"));
-      }
-    } catch {}
-
-    // preroll [start]
-    // build FFMPEG arguments - preroll
-    let argv_spot = [];
-    argv_spot.push("-re");
-    argv_spot.push("-i");
-    argv_spot.push("./src/assets/preroll.m4a");
-    argv_spot.push("-acodec");
-    argv_spot.push(config.codec.type);
-    argv_spot.push("-ab");
-    argv_spot.push(config.codec.bitrate);
-    argv_spot.push("-ac");
-    argv_spot.push(config.codec.channels);
-    argv_spot.push("-ar");
-    argv_spot.push(config.codec.sampleRate);
-    if (config.codec.normalize) {
-      argv_spot.push("-af");
-      argv_spot.push("loudnorm=I=-16:LRA=12:TP=-1.5");
-    }
-    argv_spot.push("-f");
-    argv_spot.push("hls");
-    argv_spot.push("-hls_segment_type");
-    argv_spot.push("fmp4");
-    argv_spot.push("-hls_time");
-    argv_spot.push(999);
-    argv_spot.push("-hls_segment_filename");
-    argv_spot.push(`${hlsPath}/preroll.m4s`);
-    argv_spot.push("-hls_fmp4_init_filename");
-    argv_spot.push(`preroll-init.mp4`);
-    argv_spot.push("-hls_flags");
-    argv_spot.push("single_file");
-    argv_spot.push(`${hlsPath}/preroll.m3u8`);
-    // [end] build FFMPEG arguments - preroll
-    spawn(config.ffmpeg, argv_spot);
-    // preroll [end]
-
-    // build FFMPEG arguments - LIVE
+  creatFfmpegConfig(hlsPath) {
     let argv = [];
+
     argv.push("-loglevel");
     argv.push("info");
     argv.push("-fflags");
@@ -125,7 +73,84 @@ class FfmpegManager {
       "delete_segments+omit_endlist+discont_start+append_list+program_date_time"
     );
     argv.push(`${hlsPath}/playlist.m3u8`);
-    // [end] build FFMPEG arguments
+
+    return argv;
+  }
+
+  creatPrerollFfmpegConfig(hlsPath, prerollKey, prerollFile) {
+    let argv = [];
+    argv.push("-re");
+    argv.push("-i");
+    argv.push(prerollFile);
+    argv.push("-acodec");
+    argv.push(config.codec.type);
+    argv.push("-ab");
+    argv.push(config.codec.bitrate);
+    argv.push("-ac");
+    argv.push(config.codec.channels);
+    argv.push("-ar");
+    argv.push(config.codec.sampleRate);
+    if (config.codec.normalize) {
+      argv.push("-af");
+      argv.push("loudnorm=I=-16:LRA=12:TP=-1.5");
+    }
+    argv.push("-f");
+    argv.push("hls");
+    argv.push("-hls_segment_type");
+    argv.push("fmp4");
+    argv.push("-hls_time");
+    argv.push(999);
+    argv.push("-hls_segment_filename");
+    argv.push(`${hlsPath}/preroll-${prerollKey}.m4s`);
+    argv.push("-hls_fmp4_init_filename");
+    argv.push(`preroll-${prerollKey}-init.mp4`);
+    argv.push("-hls_flags");
+    argv.push("single_file");
+    argv.push(`${hlsPath}/preroll-${prerollKey}.m3u8`);
+
+    return argv;
+  }
+
+  start() {
+    if (global.sessions.get(this.config.id) !== null) {
+      Logger.error(
+        `Can't start ffmpeg session - session with id "${this.config.id}" already exists!`
+      );
+      return false;
+    }
+
+    // create the HLS folder
+    const hlsPath = `${config.hls.root}/${this.config.id}`;
+    mkdirp.sync(hlsPath);
+    try {
+      const newPlaylistPath = `${hlsPath}/playlist.m3u8`;
+      if (!fs.existsSync(newPlaylistPath)) {
+        fs.closeSync(fs.openSync(newPlaylistPath, "w"));
+      }
+    } catch {}
+
+    // preroll [start]
+    if (this.config.preroll && this.config.preroll?.all) {
+      const prerollKeys = Object.keys(this.config.preroll);
+      if (prerollKeys.length > 0) {
+        prerollKeys.forEach((prerollKey) => {
+          const prerollFile = this.config.preroll[prerollKey];
+          Logger.debug(
+            `Creating pre-roll spot for stream "${this.config.id}" - "${prerollKey}".`
+          );
+          const argv_spot = this.creatPrerollFfmpegConfig(
+            hlsPath,
+            prerollKey,
+            prerollFile
+          );
+          spawn(config.ffmpeg, argv_spot);
+        });
+      }
+    }
+    // preroll [end]
+
+    // build FFMPEG arguments - LIVE
+    const argv = this.creatFfmpegConfig(hlsPath);
 
     this.ffmpeg_exec = spawn(config.ffmpeg, argv);
     Logger.debug(`Created ffmpeg process with id ${this.ffmpeg_exec.pid}`);
