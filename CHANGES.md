@@ -1,6 +1,10 @@
 # HLS Relay server
 
-## 1.3.1
+## 1.4.0
+
+-
+
+## 1.3.5
 
 - support for the new stats
 
