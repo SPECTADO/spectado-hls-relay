@@ -66,12 +66,10 @@ class FfmpegManager {
     argv.push(config.hls.hlsListSize);
     argv.push("-hls_segment_filename");
     argv.push(`${hlsPath}/s%4d.m4s`);
-    argv.push("-lhls");
-    argv.push("1");
+    //argv.push("-lhls");argv.push("1");
     argv.push("-hls_flags");
-    argv.push(
-      "delete_segments+omit_endlist+discont_start+append_list+program_date_time"
-    );
+    //argv.push("delete_segments+omit_endlist+discont_start+append_list+program_date_time");
+    argv.push("delete_segments+omit_endlist+discont_start+append_list");
     argv.push(`${hlsPath}/playlist.m3u8`);
 
     return argv;
