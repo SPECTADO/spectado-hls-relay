@@ -53,6 +53,10 @@ class FfmpegManager {
       argv.push("-af");
       argv.push("loudnorm=I=-16:LRA=12:TP=-1.5");
     }
+
+    argv.push("-map_metadata:g");
+    argv.push("-1");
+
     argv.push("-f");
     argv.push("hls");
     argv.push("-hls_segment_type");
@@ -92,6 +96,10 @@ class FfmpegManager {
       argv.push("-af");
       argv.push("loudnorm=I=-16:LRA=12:TP=-1.5");
     }
+
+    argv.push("-map_metadata:g");
+    argv.push("-1");
+
     argv.push("-f");
     argv.push("hls");
     argv.push("-hls_segment_type");
