@@ -1,4 +1,5 @@
 import express from "express";
+import mime from "mime";
 import fs from "fs";
 import config from "../config.js";
 import Logger from "../Logger.js";
@@ -25,16 +26,13 @@ if (cluster.isWorker) {
   }, 15000);
 }
 
+mime.define({ "application/vnd.apple.mpegurl": ["m3u8"] });
+
 //router.all("/:streamId/init.mp4", (req, _res, next) => { const streamId = req.params?.streamId; Logger.debug(`New listener of stream '${streamId}'`); next(); });
 
 router.all("*.m3u8", (req, res, _next) => {
   const playlistPath = req.params[0];
   const ct = config.hls.hlsTime || 5;
-
-  res.header(
-    "Cache-Control",
-    `max-age:${ct},s-max-age=${ct},must-revalidate,proxy-revalidate,stale-while-revalidate`
-  );
 
   const filename = `${config.hls.root}${playlistPath}.m3u8`;
   fs.readFile(filename, "utf8", (err, playlistData) => {
@@ -65,7 +63,7 @@ router.all("*.m3u8", (req, res, _next) => {
     const streamName = playlistPath?.split("/")?.at(1);
     const prerollKey = getPrerollKey(streamName, req);
     const prerollFile = `preroll-${prerollKey}.m4s`;
-    const hasPreroll = prerollKey ? true : false;
+    const hasPreroll = false; //prerollKey ? true : false;
 
     if (hasPreroll) {
       playlistWithQueryParams = playlistWithQueryParams.replace(
@@ -74,6 +72,12 @@ router.all("*.m3u8", (req, res, _next) => {
       );
     }
     // [end] inject pre-roll
+
+    res.header(
+      "Cache-Control",
+      `max-age:${ct},s-max-age=${ct},must-revalidate,proxy-revalidate,stale-while-revalidate`
+    );
+    res.header("Content-Type", 'application/vnd.apple.mpegurl; charset=""');
 
     res.status(200).send(playlistWithQueryParams);
   });
