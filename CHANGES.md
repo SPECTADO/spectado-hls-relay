@@ -1,5 +1,9 @@
 # HLS Relay server
 
+## 1.4.2
+
+- m3u8 playlist MIME type fix
+
 ## 1.4.1
 
 - stripping all metadata from source when building HLS segments
