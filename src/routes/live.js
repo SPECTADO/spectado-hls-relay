@@ -63,7 +63,7 @@ router.all("*.m3u8", (req, res, _next) => {
     const streamName = playlistPath?.split("/")?.at(1);
     const prerollKey = getPrerollKey(streamName, req);
     const prerollFile = `preroll-${prerollKey}.m4s`;
-    const hasPreroll = false; //prerollKey ? true : false;
+    const hasPreroll = prerollKey ? true : false;
 
     if (hasPreroll) {
       playlistWithQueryParams = playlistWithQueryParams.replace(
