@@ -63,7 +63,7 @@ router.all("*.m3u8", (req, res, _next) => {
     const streamName = playlistPath?.split("/")?.at(1);
     const prerollKey = getPrerollKey(streamName, req);
     const prerollFile = `preroll-${prerollKey}.m4a`;
-    const prerollDuration = 4;
+    //const prerollDuration = 4;
     const hasPreroll = prerollKey ? true : false;
 
     //Logger.debug({ streamName, prerollKey, prerollFile, hasPreroll });
@@ -71,8 +71,9 @@ router.all("*.m3u8", (req, res, _next) => {
     if (hasPreroll) {
       playlistWithQueryParams = playlistWithQueryParams.replace(
         '#EXT-X-MAP:URI="init.mp4"',
-        `#EXT-X-MAP:URI="init.mp4"\r\n#EXT-X-CUE-OUT:DURATION=${prerollDuration}\r\n#EXTINF:${prerollDuration},\r\n${prerollFile}\r\n#EXT-X-CUE-IN\r\n#EXT-X-DISCONTINUITY`
+        `#EXT-X-MAP:URI="init.mp4"\r\n#EXT-X-CUE-OUT\r\n${prerollFile}\r\n#EXT-X-CUE-IN\r\n#EXT-X-DISCONTINUITY`
       );
+      // #EXTINF:${prerollDuration}\r\n
     }
 
     // [end] inject pre-roll

@@ -4,6 +4,7 @@ import Logger from "./Logger.js";
 import config from "./config.js";
 import mkdirp from "mkdirp";
 import fs from "fs";
+import { getAudioDurationInSeconds } from "get-audio-duration";
 
 const watchdogInterval = 10000;
 
@@ -98,6 +99,7 @@ class FfmpegManager {
     argv.push("-map_metadata:g");
     argv.push("-1");
     argv.push(`${hlsPath}/preroll-${prerollKey}.m4a`);
+    argv.push("-y");
 
     /* old HLS preroll segment...
     argv.push("-f");
@@ -148,11 +150,22 @@ class FfmpegManager {
             prerollKey,
             prerollFile
           );
-          spawn(config.ffmpeg, argv_spot);
+          const ffmpeg_spot_exec = spawn(config.ffmpeg, argv_spot);
           Logger.debug(
             `Creating pre-roll spot for stream "${this.config.id}" - "${prerollKey}".`
           );
-          Logger.debug(config.ffmpeg, argv_spot.join(" "));
+          Logger.ffdebug(config.ffmpeg, argv_spot.join(" "));
+
+          ffmpeg_spot_exec.on("close", (code) => {
+            getAudioDurationInSeconds(
+              `${hlsPath}/preroll-${prerollKey}.m4a`
+            ).then((duration) => {
+              Logger.debug(
+                `Transmuxing of pre-roll spot "${prerollKey}" ended with code ${code} - duration ${duration}`
+              );
+              // TODO: duration
+            });
+          });
         });
       }
     }
@@ -163,7 +176,7 @@ class FfmpegManager {
 
     this.ffmpeg_exec = spawn(config.ffmpeg, argv);
     Logger.debug(`Created ffmpeg process with id ${this.ffmpeg_exec.pid}`);
-    Logger.debug(config.ffmpeg, argv.join(" "));
+    Logger.ffdebug(config.ffmpeg, argv.join(" "));
     global.sessions.add(this);
     this.watchdog = setTimeout(
       this.handleHangedFfmpeg.bind(this),
