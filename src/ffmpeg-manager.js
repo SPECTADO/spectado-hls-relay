@@ -53,10 +53,8 @@ class FfmpegManager {
       argv.push("-af");
       argv.push("loudnorm=I=-16:LRA=12:TP=-1.5");
     }
-
     argv.push("-map_metadata:g");
     argv.push("-1");
-
     argv.push("-f");
     argv.push("hls");
     argv.push("-hls_segment_type");
@@ -72,8 +70,9 @@ class FfmpegManager {
     argv.push(`${hlsPath}/s%4d.m4s`);
     //argv.push("-lhls");argv.push("1");
     argv.push("-hls_flags");
-    //argv.push("delete_segments+omit_endlist+discont_start+append_list+program_date_time");
-    argv.push("delete_segments+omit_endlist+discont_start+append_list");
+    argv.push(
+      "delete_segments+omit_endlist+discont_start+append_list+program_date_time"
+    );
     argv.push(`${hlsPath}/playlist.m3u8`);
 
     return argv;
@@ -96,10 +95,11 @@ class FfmpegManager {
       argv.push("-af");
       argv.push("loudnorm=I=-16:LRA=12:TP=-1.5");
     }
-
     argv.push("-map_metadata:g");
     argv.push("-1");
+    argv.push(`${hlsPath}/preroll-${prerollKey}.m4a`);
 
+    /* old HLS preroll segment...
     argv.push("-f");
     argv.push("hls");
     argv.push("-hls_segment_type");
@@ -113,6 +113,7 @@ class FfmpegManager {
     argv.push("-hls_flags");
     argv.push("single_file");
     argv.push(`${hlsPath}/preroll-${prerollKey}.m3u8`);
+    */
 
     return argv;
   }
@@ -141,15 +142,17 @@ class FfmpegManager {
       if (prerollKeys.length > 0) {
         prerollKeys.forEach((prerollKey) => {
           const prerollFile = this.config.preroll[prerollKey];
-          Logger.debug(
-            `Creating pre-roll spot for stream "${this.config.id}" - "${prerollKey}".`
-          );
+
           const argv_spot = this.creatPrerollFfmpegConfig(
             hlsPath,
             prerollKey,
             prerollFile
           );
           spawn(config.ffmpeg, argv_spot);
+          Logger.debug(
+            `Creating pre-roll spot for stream "${this.config.id}" - "${prerollKey}".`
+          );
+          Logger.debug(config.ffmpeg, argv_spot.join(" "));
         });
       }
     }
@@ -160,7 +163,7 @@ class FfmpegManager {
 
     this.ffmpeg_exec = spawn(config.ffmpeg, argv);
     Logger.debug(`Created ffmpeg process with id ${this.ffmpeg_exec.pid}`);
-    Logger.ffdebug(config.ffmpeg, argv.join(" "));
+    Logger.debug(config.ffmpeg, argv.join(" "));
     global.sessions.add(this);
     this.watchdog = setTimeout(
       this.handleHangedFfmpeg.bind(this),

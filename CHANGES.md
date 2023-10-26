@@ -1,15 +1,9 @@
 # HLS Relay server
 
-## 1.4.2
+## 1.4
 
 - m3u8 playlist MIME type fix
-
-## 1.4.1
-
 - stripping all metadata from source when building HLS segments
-
-## 1.4.0
-
 - pre-roll spot injection (test)
 
 ## 1.3.5

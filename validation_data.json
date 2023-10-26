@@ -1,0 +1,383 @@
+{
+  "mimeType" : "application\/vnd.apple.mpegurl; charset=utf-8",
+  "processedSegmentsCount" : 7,
+  "url" : "http:\/\/localhost:8080\/live\/match-cs-test\/playlist.m3u8",
+  "hasDiscSequenceTag" : false,
+  "messages" : [
+    {
+      "errorParserCode" : -12312,
+      "errorComment" : "Media Entry time value does not match previous playlist for MEDIA-SEQUENCE 27: 6.013968 vs 4.000000",
+      "errorDomain" : "CoreMediaErrorDomain",
+      "errorStatusCode" : -12312,
+      "errorRequirementLevel" : 1,
+      "errorParserLine" : "preroll-all.m4a"
+    },
+    {
+      "errorParserCode" : -12312,
+      "errorComment" : "Media Entry URL not match previous playlist for MEDIA-SEQUENCE 27: s0026.m4s vs preroll-all.m4a",
+      "errorDomain" : "CoreMediaErrorDomain",
+      "errorStatusCode" : -12312,
+      "errorRequirementLevel" : 1,
+      "errorParserLine" : "preroll-all.m4a"
+    },
+    {
+      "errorParserCode" : -12312,
+      "errorComment" : "Media Entry time value does not match previous playlist for MEDIA-SEQUENCE 28: 5.990748 vs 4.000000",
+      "errorDomain" : "CoreMediaErrorDomain",
+      "errorStatusCode" : -12312,
+      "errorRequirementLevel" : 1,
+      "errorParserLine" : "preroll-all.m4a"
+    },
+    {
+      "errorParserCode" : -12312,
+      "errorComment" : "Media Entry URL not match previous playlist for MEDIA-SEQUENCE 28: s0027.m4s vs preroll-all.m4a",
+      "errorDomain" : "CoreMediaErrorDomain",
+      "errorStatusCode" : -12312,
+      "errorRequirementLevel" : 1,
+      "errorParserLine" : "preroll-all.m4a"
+    },
+    {
+      "errorParserCode" : -12312,
+      "errorComment" : "Media Entry time value does not match previous playlist for MEDIA-SEQUENCE 29: 6.013968 vs 4.000000",
+      "errorDomain" : "CoreMediaErrorDomain",
+      "errorStatusCode" : -12312,
+      "errorRequirementLevel" : 1,
+      "errorParserLine" : "preroll-all.m4a"
+    },
+    {
+      "errorParserCode" : -12312,
+      "errorComment" : "Media Entry URL not match previous playlist for MEDIA-SEQUENCE 29: s0028.m4s vs preroll-all.m4a",
+      "errorDomain" : "CoreMediaErrorDomain",
+      "errorStatusCode" : -12312,
+      "errorRequirementLevel" : 1,
+      "errorParserLine" : "preroll-all.m4a"
+    },
+    {
+      "errorParserCode" : -12312,
+      "errorComment" : "Media Entry time value does not match previous playlist for MEDIA-SEQUENCE 30: 5.990748 vs 4.000000",
+      "errorDomain" : "CoreMediaErrorDomain",
+      "errorStatusCode" : -12312,
+      "errorRequirementLevel" : 1,
+      "errorParserLine" : "preroll-all.m4a"
+    },
+    {
+      "errorParserCode" : -12312,
+      "errorComment" : "Media Entry URL not match previous playlist for MEDIA-SEQUENCE 30: s0029.m4s vs preroll-all.m4a",
+      "errorDomain" : "CoreMediaErrorDomain",
+      "errorStatusCode" : -12312,
+      "errorRequirementLevel" : 1,
+      "errorParserLine" : "preroll-all.m4a"
+    },
+    {
+      "errorParserCode" : -12312,
+      "errorComment" : "Media Entry time value does not match previous playlist for MEDIA-SEQUENCE 31: 5.990748 vs 4.000000",
+      "errorDomain" : "CoreMediaErrorDomain",
+      "errorStatusCode" : -12312,
+      "errorRequirementLevel" : 1,
+      "errorParserLine" : "preroll-all.m4a"
+    },
+    {
+      "errorParserCode" : -12312,
+      "errorComment" : "Media Entry URL not match previous playlist for MEDIA-SEQUENCE 31: s0030.m4s vs preroll-all.m4a",
+      "errorDomain" : "CoreMediaErrorDomain",
+      "errorStatusCode" : -12312,
+      "errorRequirementLevel" : 1,
+      "errorParserLine" : "preroll-all.m4a"
+    },
+    {
+      "errorComment" : "Illegal MIME type",
+      "errorDomain" : "ValidatorErrorDomain",
+      "errorStatusCode" : -50024,
+      "errorRequirementLevel" : 1,
+      "errorDetail" : "MIME type: application\/vnd.apple.mpegurl; charset=utf-8"
+    },
+    {
+      "errorComment" : "Received stale playlist",
+      "errorDomain" : "ValidatorErrorDomain",
+      "errorStatusCode" : -50100,
+      "errorRequirementLevel" : 1,
+      "errorDetail" : "Playlist media sequence number: 27, Last seen: 26"
+    },
+    {
+      "errorComment" : "Received stale playlist",
+      "errorDomain" : "ValidatorErrorDomain",
+      "errorStatusCode" : -50100,
+      "errorRequirementLevel" : 1,
+      "errorDetail" : "Playlist media sequence number: 28, Last seen: 27"
+    },
+    {
+      "errorComment" : "Received stale playlist",
+      "errorDomain" : "ValidatorErrorDomain",
+      "errorStatusCode" : -50100,
+      "errorRequirementLevel" : 1,
+      "errorDetail" : "Playlist media sequence number: 29, Last seen: 28"
+    },
+    {
+      "errorComment" : "Received stale playlist",
+      "errorDomain" : "ValidatorErrorDomain",
+      "errorStatusCode" : -50100,
+      "errorRequirementLevel" : 1,
+      "errorDetail" : "Playlist media sequence number: 30, Last seen: 29"
+    },
+    {
+      "errorComment" : "Received stale playlist",
+      "errorDomain" : "ValidatorErrorDomain",
+      "errorStatusCode" : -50100,
+      "errorRequirementLevel" : 1,
+      "errorDetail" : "Playlist media sequence number: 31, Last seen: 30"
+    }
+  ],
+  "integerDurations" : true,
+  "meanSegmentCount" : 3,
+  "measuredMeanBitrate" : 34284,
+  "parsedSegmentsCount" : 8,
+  "fetchCount" : 8,
+  "hasEndTag" : false,
+  "validatorTimestamp" : "2023-10-27T00:45:03.346+02:00",
+  "validatorVersion" : "1.20.9 (618.21b-230614)",
+  "meanTotalDuration" : 15.998910999999998,
+  "measuredMaxBitrate" : 35994,
+  "independentSegments" : false,
+  "playlistKind" : "media",
+  "sslContentDeliveredSecurely" : false,
+  "discontinuities" : [
+    {
+      "segments" : [
+        {
+          "discontinuityDomain" : 0,
+          "segmentByteRangeLength" : 0,
+          "url" : "preroll-all.m4a",
+          "mimeType" : "audio\/mp4",
+          "segmentDateStamp" : "2023-10-27T00:44:09.657+02:00",
+          "dataID" : 1,
+          "processed" : false,
+          "segmentDurationTag" : 4,
+          "mediaSequence" : 26,
+          "sslContentDeliveredSecurely" : false,
+          "segmentByteRangeOffset" : 0
+        }
+      ],
+      "measurements" : {
+        "measuredMaxBitrate" : 35994,
+        "measuredMeanBitrate" : 35994,
+        "measuredSegments" : 1
+      },
+      "tracks" : [
+
+      ]
+    },
+    {
+      "segments" : [
+        {
+          "segmentDurationTag" : 6.0139680000000002,
+          "mediaSequence" : 27,
+          "mimeType" : "application\/octet-stream",
+          "dataID" : 3,
+          "url" : "s0026.m4s",
+          "segmentByteRangeLength" : 0,
+          "sslContentDeliveredSecurely" : false,
+          "segmentByteRangeOffset" : 0,
+          "format" : "fragmentedMP4",
+          "audioStartsWithIPF" : true,
+          "segmentDateStamp" : "2023-10-27T00:44:13.657+02:00",
+          "startTime" : 0,
+          "discontinuityDomain" : 2
+        },
+        {
+          "segmentDurationTag" : 5.990748,
+          "mediaSequence" : 28,
+          "mimeType" : "application\/octet-stream",
+          "dataID" : 4,
+          "url" : "s0027.m4s",
+          "segmentByteRangeLength" : 0,
+          "sslContentDeliveredSecurely" : false,
+          "segmentByteRangeOffset" : 0,
+          "format" : "fragmentedMP4",
+          "audioStartsWithIPF" : true,
+          "segmentDateStamp" : "2023-10-27T00:44:19.671+02:00",
+          "startTime" : 6.0139682539682537,
+          "discontinuityDomain" : 2
+        }
+      ],
+      "measurements" : {
+        "measuredMaxBitrate" : 34651,
+        "measuredMeanBitrate" : 34121,
+        "measuredSegments" : 7
+      },
+      "tracks" : [
+        {
+          "trackMediaType" : "soun",
+          "trackAudioChannelCount" : 1,
+          "trackId" : 1,
+          "trackAudioSampleRate" : 44100,
+          "trackMediaSubType" : "aac ",
+          "trackAudioChannelLayout" : "Mono"
+        }
+      ]
+    },
+    {
+      "segments" : [
+        {
+          "segmentDurationTag" : 6.0139680000000002,
+          "mediaSequence" : 29,
+          "mimeType" : "application\/octet-stream",
+          "dataID" : 5,
+          "url" : "s0028.m4s",
+          "segmentByteRangeLength" : 0,
+          "sslContentDeliveredSecurely" : false,
+          "segmentByteRangeOffset" : 0,
+          "format" : "fragmentedMP4",
+          "audioStartsWithIPF" : true,
+          "segmentDateStamp" : "2023-10-27T00:44:25.662+02:00",
+          "startTime" : 12.004716553287983,
+          "discontinuityDomain" : 3
+        }
+      ],
+      "measurements" : {
+
+      },
+      "tracks" : [
+        {
+          "trackMediaType" : "soun",
+          "trackAudioChannelCount" : 1,
+          "trackId" : 1,
+          "trackAudioSampleRate" : 44100,
+          "trackMediaSubType" : "aac ",
+          "trackAudioChannelLayout" : "Mono"
+        }
+      ]
+    },
+    {
+      "segments" : [
+        {
+          "segmentDurationTag" : 5.990748,
+          "mediaSequence" : 30,
+          "mimeType" : "application\/octet-stream",
+          "dataID" : 6,
+          "url" : "s0029.m4s",
+          "segmentByteRangeLength" : 0,
+          "sslContentDeliveredSecurely" : false,
+          "segmentByteRangeOffset" : 0,
+          "format" : "fragmentedMP4",
+          "audioStartsWithIPF" : true,
+          "segmentDateStamp" : "2023-10-27T00:44:31.676+02:00",
+          "startTime" : 18.018684807256236,
+          "discontinuityDomain" : 4
+        }
+      ],
+      "measurements" : {
+
+      },
+      "tracks" : [
+        {
+          "trackMediaType" : "soun",
+          "trackAudioChannelCount" : 1,
+          "trackId" : 1,
+          "trackAudioSampleRate" : 44100,
+          "trackMediaSubType" : "aac ",
+          "trackAudioChannelLayout" : "Mono"
+        }
+      ]
+    },
+    {
+      "segments" : [
+        {
+          "segmentDurationTag" : 5.990748,
+          "mediaSequence" : 31,
+          "mimeType" : "application\/octet-stream",
+          "dataID" : 7,
+          "url" : "s0030.m4s",
+          "segmentByteRangeLength" : 0,
+          "sslContentDeliveredSecurely" : false,
+          "segmentByteRangeOffset" : 0,
+          "format" : "fragmentedMP4",
+          "audioStartsWithIPF" : true,
+          "segmentDateStamp" : "2023-10-27T00:44:37.667+02:00",
+          "startTime" : 24.009433106575965,
+          "discontinuityDomain" : 5
+        }
+      ],
+      "measurements" : {
+
+      },
+      "tracks" : [
+        {
+          "trackMediaType" : "soun",
+          "trackAudioChannelCount" : 1,
+          "trackId" : 1,
+          "trackAudioSampleRate" : 44100,
+          "trackMediaSubType" : "aac ",
+          "trackAudioChannelLayout" : "Mono"
+        }
+      ]
+    },
+    {
+      "segments" : [
+        {
+          "segmentDurationTag" : 6.0139680000000002,
+          "mediaSequence" : 32,
+          "mimeType" : "application\/octet-stream",
+          "dataID" : 8,
+          "url" : "s0031.m4s",
+          "segmentByteRangeLength" : 0,
+          "sslContentDeliveredSecurely" : false,
+          "segmentByteRangeOffset" : 0,
+          "format" : "fragmentedMP4",
+          "audioStartsWithIPF" : true,
+          "segmentDateStamp" : "2023-10-27T00:44:43.657+02:00",
+          "startTime" : 30.000181405895692,
+          "discontinuityDomain" : 6
+        }
+      ],
+      "measurements" : {
+
+      },
+      "tracks" : [
+        {
+          "trackMediaType" : "soun",
+          "trackAudioChannelCount" : 1,
+          "trackId" : 1,
+          "trackAudioSampleRate" : 44100,
+          "trackMediaSubType" : "aac ",
+          "trackAudioChannelLayout" : "Mono"
+        }
+      ]
+    },
+    {
+      "segments" : [
+        {
+          "segmentDurationTag" : 5.990748,
+          "mediaSequence" : 33,
+          "mimeType" : "application\/octet-stream",
+          "dataID" : 9,
+          "url" : "s0032.m4s",
+          "segmentByteRangeLength" : 0,
+          "sslContentDeliveredSecurely" : false,
+          "segmentByteRangeOffset" : 0,
+          "format" : "fragmentedMP4",
+          "audioStartsWithIPF" : true,
+          "segmentDateStamp" : "2023-10-27T00:44:49.671+02:00",
+          "startTime" : 36.014149659863946,
+          "discontinuityDomain" : 7
+        }
+      ],
+      "measurements" : {
+
+      },
+      "tracks" : [
+        {
+          "trackMediaType" : "soun",
+          "trackAudioChannelCount" : 1,
+          "trackId" : 1,
+          "trackAudioSampleRate" : 44100,
+          "trackMediaSubType" : "aac ",
+          "trackAudioChannelLayout" : "Mono"
+        }
+      ]
+    }
+  ],
+  "playlistTargetDuration" : 6,
+  "dataVersion" : 1.1000000000000001,
+  "gzipEncoded" : false,
+  "dataID" : 0
+}

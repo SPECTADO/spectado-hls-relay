@@ -62,20 +62,26 @@ router.all("*.m3u8", (req, res, _next) => {
     //todo: find existing preroll key based on userdata
     const streamName = playlistPath?.split("/")?.at(1);
     const prerollKey = getPrerollKey(streamName, req);
-    const prerollFile = `preroll-${prerollKey}.m4s`;
+    const prerollFile = `preroll-${prerollKey}.m4a`;
+    const prerollDuration = 4;
     const hasPreroll = prerollKey ? true : false;
+
+    //Logger.debug({ streamName, prerollKey, prerollFile, hasPreroll });
 
     if (hasPreroll) {
       playlistWithQueryParams = playlistWithQueryParams.replace(
         '#EXT-X-MAP:URI="init.mp4"',
-        `#EXT-X-MAP:URI="init.mp4"\r\n#EXTINF:12,\r\n${prerollFile}\r\n#EXT-X-DISCONTINUITY`
+        `#EXT-X-MAP:URI="init.mp4"\r\n#EXT-X-CUE-OUT:DURATION=${prerollDuration}\r\n#EXTINF:${prerollDuration},\r\n${prerollFile}\r\n#EXT-X-CUE-IN\r\n#EXT-X-DISCONTINUITY`
       );
     }
+
     // [end] inject pre-roll
 
     res.header(
       "Cache-Control",
-      `max-age:${ct},s-max-age=${ct},must-revalidate,proxy-revalidate,stale-while-revalidate`
+      `max-age:${Math.round(ct / 2)},s-max-age=${Math.round(
+        ct / 2
+      )},must-revalidate,proxy-revalidate,stale-while-revalidate`
     );
     res.header("Content-Type", 'application/vnd.apple.mpegurl; charset=""');
 
