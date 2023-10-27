@@ -4,7 +4,6 @@ import Logger from "./Logger.js";
 import config from "./config.js";
 import mkdirp from "mkdirp";
 import fs from "fs";
-import { getAudioDurationInSeconds } from "get-audio-duration";
 
 const watchdogInterval = 10000;
 
@@ -155,17 +154,6 @@ class FfmpegManager {
             `Creating pre-roll spot for stream "${this.config.id}" - "${prerollKey}".`
           );
           Logger.ffdebug(config.ffmpeg, argv_spot.join(" "));
-
-          ffmpeg_spot_exec.on("close", (code) => {
-            getAudioDurationInSeconds(
-              `${hlsPath}/preroll-${prerollKey}.m4a`
-            ).then((duration) => {
-              Logger.debug(
-                `Transmuxing of pre-roll spot "${prerollKey}" ended with code ${code} - duration ${duration}`
-              );
-              // TODO: duration
-            });
-          });
         });
       }
     }
