@@ -67,7 +67,7 @@ class FfmpegManager {
     argv.push("-hls_list_size");
     argv.push(config.hls.hlsListSize);
     argv.push("-hls_segment_filename");
-    argv.push(`${hlsPath}/s%4d.m4s`);
+    argv.push(`${hlsPath}/segment-%4d.m4s`);
     //argv.push("-lhls");argv.push("1");
     argv.push("-hls_flags");
     argv.push(
@@ -149,7 +149,8 @@ class FfmpegManager {
             prerollKey,
             prerollFile
           );
-          const ffmpeg_spot_exec = spawn(config.ffmpeg, argv_spot);
+
+          spawn(config.ffmpeg, argv_spot);
           Logger.debug(
             `Creating pre-roll spot for stream "${this.config.id}" - "${prerollKey}".`
           );

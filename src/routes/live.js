@@ -75,8 +75,19 @@ router.all("*.m3u8", (req, res, _next) => {
       );
       // #EXTINF:${prerollDuration}\r\n
     }
-
     // [end] inject pre-roll
+
+    const fullRequestUrl = `${req.protocol}://${req.get(
+      "host"
+    )}/live/${streamName}`;
+    playlistWithQueryParams = playlistWithQueryParams.replaceAll(
+      "preroll-",
+      `${fullRequestUrl}/preroll-`
+    );
+    playlistWithQueryParams = playlistWithQueryParams.replaceAll(
+      "segment-",
+      `${fullRequestUrl}/segment-`
+    );
 
     res.header(
       "Cache-Control",
