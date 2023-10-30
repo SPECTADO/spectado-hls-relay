@@ -71,7 +71,7 @@ router.all("*.m3u8", (req, res, _next) => {
     if (hasPreroll) {
       playlistWithQueryParams = playlistWithQueryParams.replace(
         '#EXT-X-MAP:URI="init.mp4"',
-        `#EXT-X-MAP:URI="init.mp4"\r\n#EXT-X-CUE-OUT\r\n${prerollFile}\r\n#EXT-X-CUE-IN\r\n#EXT-X-DISCONTINUITY`
+        `#EXT-X-MAP:URI="init.mp4"\r\n#EXTINF:6,\r\n${prerollFile}\r\n#EXT-X-DISCONTINUITY`
       );
       // #EXTINF:${prerollDuration}\r\n
     }
