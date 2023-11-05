@@ -28,12 +28,10 @@ class FfmpegManager {
 
     argv.push("-loglevel");
     argv.push("info");
-    argv.push("-fflags");
-    argv.push("nobuffer");
-    argv.push("-flags");
-    argv.push("low_delay");
-    argv.push("-stream_loop");
-    argv.push("-1");
+    // argv.push("-fflags");argv.push("nobuffer");
+    // argv.push("-flags"); argv.push("low_delay");
+    // argv.push("-stream_loop"); //argv.push("-1");
+
     argv.push("-re");
     argv.push("-i");
     argv.push(this.config.source);
