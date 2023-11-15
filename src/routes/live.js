@@ -64,7 +64,7 @@ router.all("*.m3u8", (req, res, _next) => {
     //todo: find existing preroll key based on userdata
     const streamName = playlistPath?.split("/")?.at(1);
     const prerollKey = getPrerollKey(streamName, req);
-    const prerollFile = `preroll-${prerollKey}.m4a`;
+    const prerollFile = `preroll-${prerollKey}.m4s`;
     //const prerollDuration = 4;
     const hasPreroll = prerollKey ? true : false;
 

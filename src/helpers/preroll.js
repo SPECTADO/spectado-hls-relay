@@ -5,10 +5,10 @@ import config from "../config.js";
 const getAllowedPrerollKeys = (streamName) => {
   const rootDir = config.hls.root;
 
-  const jsfiles = globSync(`${rootDir}/${streamName}/preroll-*.m4a`, {});
+  const jsfiles = globSync(`${rootDir}/${streamName}/preroll-*.m4s`, {});
   if (jsfiles && jsfiles?.length > 0) {
     const allowedPrerollKeys = jsfiles.map((path) => {
-      return path.split("preroll-")?.at(1)?.replace(".m4a", "");
+      return path.split("preroll-")?.at(1)?.replace(".m4s", "");
     });
     return allowedPrerollKeys;
   }
