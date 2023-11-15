@@ -95,10 +95,6 @@ class FfmpegManager {
     }
     argv.push("-map_metadata:g");
     argv.push("-1");
-    //argv.push(`${hlsPath}/preroll-${prerollKey}.m4a`);
-    //argv.push("-y");
-
-    /* old HLS preroll segment...*/
     argv.push("-f");
     argv.push("hls");
     argv.push("-hls_segment_type");
@@ -112,7 +108,6 @@ class FfmpegManager {
     argv.push("-hls_flags");
     argv.push("single_file");
     argv.push(`${hlsPath}/preroll-${prerollKey}.m3u8`);
-    /**/
 
     return argv;
   }
