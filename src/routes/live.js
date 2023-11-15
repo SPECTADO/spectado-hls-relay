@@ -103,6 +103,7 @@ router.all("*.m3u8", (req, res, _next) => {
     }
     // [end] inject pre-roll
 
+    /*
     const fullRequestUrl = `${req.protocol}://${req.get(
       "host"
     )}/live/${streamName}`;
@@ -114,6 +115,7 @@ router.all("*.m3u8", (req, res, _next) => {
       "segment-",
       `${fullRequestUrl}/segment-`
     );
+    */
 
     res.header(
       "Cache-Control",

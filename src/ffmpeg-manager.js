@@ -69,7 +69,7 @@ class FfmpegManager {
     //argv.push("-lhls");argv.push("1");
     argv.push("-hls_flags");
     argv.push(
-      "delete_segments+omit_endlist+discont_start+append_list+program_date_time"
+      "delete_segments+omit_endlist+discont_start+append_list" //+program_date_time
     );
     argv.push(`${hlsPath}/playlist.m3u8`);
 
