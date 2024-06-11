@@ -18,9 +18,36 @@ class FfmpegManager {
   constructor(config) {
     //super();
     this.ffmpeg_exec = null;
+    this.ffmpeg_ice = null;
     this.started = new Date();
     this.config = config;
     this.watchdog = null;
+  }
+
+  creatFfmpegConfigIce() {
+    let argv = [];
+
+    argv.push("-loglevel");
+    argv.push("info");
+    argv.push("-re");
+    argv.push("-i");
+    argv.push(this.config.source);
+    argv.push("-muxdelay");
+    argv.push("1");
+    argv.push("-muxpreload");
+    argv.push("1");
+    argv.push("-vn");
+    argv.push("-c:a");
+    argv.push("libmp3lame");
+    if (config.codec.normalize) {
+      argv.push("-af");
+      argv.push("loudnorm=I=-16:LRA=12:TP=-1.5");
+    }
+    argv.push("-f");
+    argv.push("mp3");
+    argv.push(`icecast://source:ghtv45ssk9@ice-livesport.play.cz/x-debug`);
+
+    return argv;
   }
 
   creatFfmpegConfig(hlsPath) {
@@ -153,17 +180,12 @@ class FfmpegManager {
     }
     // preroll [end]
 
-    // build FFMPEG arguments - LIVE
-    const argv = this.creatFfmpegConfig(hlsPath);
+    // build FFMPEG arguments - LIVE HLS
+    const argv = this.creatFfmpegConfigIce();
 
     this.ffmpeg_exec = spawn(config.ffmpeg, argv);
     Logger.debug(`Created ffmpeg process with id ${this.ffmpeg_exec.pid}`);
     Logger.ffdebug(config.ffmpeg, argv.join(" "));
-    global.sessions.add(this);
-    this.watchdog = setTimeout(
-      this.handleHangedFfmpeg.bind(this),
-      watchdogInterval
-    );
 
     this.ffmpeg_exec.on("error", (e) => {
       Logger.error(e);
@@ -203,6 +225,52 @@ class FfmpegManager {
         `Transmuxing of "${this.config.id}" ended with code ${code}`
       );
     });
+    // LIVE HLS [end]
+
+    // build config for FFMPEG - icecast relay
+    const argvIce = this.creatFfmpegConfig(hlsPath);
+
+    this.ffmpeg_ice = spawn(config.ffmpeg, argvIce);
+    Logger.debug(`Created ffmpeg process with id ${this.ffmpeg_ice.pid}`);
+    Logger.ffdebug(config.ffmpeg, argvIce.join(" "));
+
+    this.ffmpeg_ice.on("error", (e) => {
+      Logger.error(e);
+    });
+
+    this.ffmpeg_ice.stderr.on("data", (data) => {
+      Logger.ffdebug(`[${this.config.id}] - ${data}`);
+      clearTimeout(this.watchdog);
+      this.watchdog = setTimeout(
+        this.handleHangedFfmpeg.bind(this),
+        watchdogInterval
+      );
+    });
+
+    this.ffmpeg_ice.on("close", (code) => {
+      clearTimeout(this.watchdog);
+      // code 255 = clean exit - killed by manager
+      if (code !== 255) {
+        global.sessions.kill(this.config.id);
+        Logger.warn(
+          `Transmuxing of "${this.config.id}" ended with code ${code}`
+        );
+        return;
+      }
+
+      global.sessions.removeRef(this.config.id); // ffmpeg could be killed as process
+      Logger.debug(
+        `Transmuxing of "${this.config.id}" ended with code ${code}`
+      );
+    });
+
+    // icecast relay [end]
+
+    global.sessions.add(this);
+    this.watchdog = setTimeout(
+      this.handleHangedFfmpeg.bind(this),
+      watchdogInterval
+    );
   }
 
   end() {
