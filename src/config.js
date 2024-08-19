@@ -38,6 +38,9 @@ const config = {
     interval: env.SHLS_STATS_INTERVAL || 60,
     pushUrl: env.SHLS_STATS_URL || "",
   },
+
+  allowedProjects: env.SHLS_ALLOWED_PROJECTS?.split(",") || null,
+  geoip: env.SHLS_GEOIP || null,
 };
 
 export default config;

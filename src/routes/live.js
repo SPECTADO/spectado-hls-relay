@@ -30,14 +30,13 @@ mime.define({ "application/vnd.apple.mpegurl": ["m3u8"] });
 
 //router.all("/:streamId/init.mp4", (req, _res, next) => { const streamId = req.params?.streamId; Logger.debug(`New listener of stream '${streamId}'`); next(); });
 
-router.all("*.m3u8", (req, res, _next) => {
+router.all("*.m3u8", async (req, res, _next) => {
   const playlistPath = req.params[0];
   //const streamName = playlistPath?.split("/")?.at(1);
-  const fsProject = req.query.fs_project;
   const ct = config.hls.hlsTime || 5;
 
   const filename = `${config.hls.root}${playlistPath}.m3u8`;
-  fs.readFile(filename, "utf8", (err, playlistData) => {
+  fs.readFile(filename, "utf8", async (err, playlistData) => {
     if (err) {
       switch (err.errno) {
         case -2:
@@ -63,31 +62,14 @@ router.all("*.m3u8", (req, res, _next) => {
     // inject pre-roll
     //todo: find existing preroll key based on userdata
     const streamName = playlistPath?.split("/")?.at(1);
-    const prerollKey = getPrerollKey(streamName, req);
+    const prerollKey = await getPrerollKey(streamName, req);
     const prerollFile = `preroll-${prerollKey}.m4s`;
     //const prerollDuration = 4;
     const hasPreroll = prerollKey ? true : false;
 
-    const allowedProjects = [
-      12606, 12640, 12603, 12622, 12639, 12633, 12618, 12643, 12646, 12608,
-      12698, 12651, 12661, 12676, 12642, 12671, 12660, 12609, 12621, 12613,
-      12654, 12697, 12647, 12625, 12620, 12657, 12665, 12614, 12631, 12605,
-      12623, 12610, 12669, 12653, 12601, 12674, 12675, 12659, 12636, 12649,
-      12658, 12662, 12672, 12641, 12632, 12607, 12673, 12611, 12615, 12602,
-      12645, 12648, 12650, 12644, 12652, 12663, 12692, 12612, 12634, 12626,
-      12604, 12664, 12694, 12696, 12616, 12695, 12812, 12693, 12656, 12628,
-      14603, 14618, 14608, 14609, 14613, 14654, 14620, 14614, 14605, 14623,
-      14610, 14669, 14601, 14662, 14672, 14641, 14632, 14607, 14673, 14611,
-      14615, 14602, 14663, 14612, 14604, 14677, 14616, 14812, 14628, 13606,
-      13640, 13603, 13622, 13639, 13633, 13618, 13643, 13608, 13661, 13660,
-      13609, 13621, 13613, 13654, 13625, 13620, 13657, 13614, 13631, 13605,
-      13623, 13610, 13669, 13601, 13636, 13658, 13662, 13641, 13632, 13607,
-      13611, 13615, 13602, 13663, 13612, 13634, 13626, 13604, 13664, 13616,
-      13812, 13656, 13628,
-    ];
-    //Logger.debug({streamName,fsProject,prerollKey,prerollFile,hasPreroll,});
+    Logger.debug("[M3U8]", { streamName, prerollKey, hasPreroll });
 
-    if (hasPreroll && allowedProjects.includes(parseInt(fsProject))) {
+    if (hasPreroll) {
       playlistWithQueryParams = playlistWithQueryParams.replace(
         '#EXT-X-MAP:URI="init.mp4"',
         `#EXT-X-MAP:URI="init.mp4"\r\n#EXTINF:6,\r\n${prerollFile}\r\n#EXT-X-DISCONTINUITY`

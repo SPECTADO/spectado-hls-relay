@@ -1,6 +1,7 @@
 import { globSync } from "glob";
 import config from "../config.js";
-//import Logger from "../Logger.js";
+import Logger from "../Logger.js";
+import { getCountryFromIp } from "./geoip.js";
 
 const getAllowedPrerollKeys = (streamName) => {
   const rootDir = config.hls.root;
@@ -15,9 +16,33 @@ const getAllowedPrerollKeys = (streamName) => {
   return [];
 };
 
-export const getPrerollKey = (streamName, req) => {
+export const getPrerollKey = async (streamName, req) => {
   const allowedPrerollKeys = getAllowedPrerollKeys(streamName);
 
-  // TODO: implement logic for geo + project
+  const ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
+
+  const country = await getCountryFromIp(ip);
+  const fsProject = req.query.fs_project;
+  //Logger.debug("getPrerollKey", { country, fsProject, ip, allowedPrerollKeys });
+
+  if (
+    config.allowedProjects &&
+    config.allowedProjects?.length > 0 &&
+    config.allowedProjects.includes(fsProject) !== true
+  )
+    return null; // LiveSport stuff
+
+  if (allowedPrerollKeys.includes(`${country}~${fsProject}`)) {
+    return `${country}~${fsProject}`;
+  }
+
+  if (allowedPrerollKeys.includes(`all~${fsProject}`)) {
+    return `all~${fsProject}`;
+  }
+
+  if (allowedPrerollKeys.includes(`${country}~all`)) {
+    return `${country}~all`;
+  }
+
   return allowedPrerollKeys.includes("all") ? "all" : null;
 };
