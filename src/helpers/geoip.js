@@ -1,8 +1,9 @@
 import maxmind from "maxmind";
 import fs from "fs";
 import Logger from "../Logger.js";
+import config from "../config.js";
 
-export const geoipDbPath = "./_temp/GeoLite2-Country.mmdb";
+export const geoipDbPath = config.geoip;
 
 export const getIpFromRequest = (req) => {
   let ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
