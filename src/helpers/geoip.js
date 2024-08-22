@@ -33,19 +33,15 @@ export const getCountryFromIp = async (ip) => {
 export const checkGeoIp = async () => {
   try {
     if (fs.existsSync(geoipDbPath) !== true) {
-      Logger.debug("[GeoIP] - getCountryFromIp - db not found");
-      return false;
+      return "[GeoIP] - getCountryFromIp - db not found";
     }
 
     const lookup = await maxmind.open(geoipDbPath);
     const country = lookup.get("8.8.8.8");
 
     const test = country?.country?.iso_code?.toString()?.toLowerCase() || "NaN";
-    if (test === "NaN") return false;
-
-    return true;
+    return test;
   } catch (err) {
-    Logger.error("[GeoIP] - getCountryFromIp error", { err });
-    return false;
+    return `[GeoIP] - getCountryFromIp error - ${JSON.stringify(err)}`;
   }
 };
