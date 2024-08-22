@@ -1,7 +1,7 @@
 import { globSync } from "glob";
 import config from "../config.js";
 import Logger from "../Logger.js";
-import { getCountryFromIp } from "./geoip.js";
+import { getCountryFromIp, getIpFromRequest } from "./geoip.js";
 
 const getAllowedPrerollKeys = (streamName) => {
   const rootDir = config.hls.root;
@@ -19,7 +19,7 @@ const getAllowedPrerollKeys = (streamName) => {
 export const getPrerollKey = async (streamName, req) => {
   const allowedPrerollKeys = getAllowedPrerollKeys(streamName);
 
-  const ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
+  const ip = getIpFromRequest(req);
 
   const country = await getCountryFromIp(ip);
   const fsProject = req.query.fs_project;
