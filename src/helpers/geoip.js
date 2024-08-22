@@ -5,7 +5,11 @@ import Logger from "../Logger.js";
 export const geoipDbPath = "./_temp/GeoLite2-Country.mmdb";
 
 export const getIpFromRequest = (req) => {
-  const ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
+  let ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
+  // If the IP is in IPv4-mapped IPv6 format, extract the IPv4 part
+  if (ip.includes("::ffff:")) {
+    ip = ip.split("::ffff:")[1];
+  }
   return ip;
 };
 
