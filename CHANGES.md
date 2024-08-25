@@ -1,5 +1,11 @@
 # HLS Relay server
 
+## 1.5
+
+- experimental pre-roll support
+- experimental pre-roll GEO restrictions
+- new env variables - SHLS_ALLOWED_PROJECTS & SHLS_GEOIP
+
 ## 1.4
 
 - m3u8 playlist MIME type fix

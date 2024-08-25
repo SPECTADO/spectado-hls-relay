@@ -131,7 +131,7 @@ class FfmpegManager {
     } catch {}
 
     // preroll [start]
-    if (this.config.preroll && this.config.preroll?.all) {
+    if (this.config.preroll) {
       const prerollKeys = Object.keys(this.config.preroll);
       if (prerollKeys.length > 0) {
         prerollKeys.forEach((prerollKey) => {
