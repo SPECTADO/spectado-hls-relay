@@ -8,7 +8,7 @@ export const geoipDbPath = config.geoip;
 export const getIpFromRequest = (req) => {
   let ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
   // If the IP is in IPv4-mapped IPv6 format, extract the IPv4 part
-  if (ip.includes("::ffff:")) {
+  if (ip?.includes("::ffff:")) {
     ip = ip.split("::ffff:")[1];
   }
   return ip;
