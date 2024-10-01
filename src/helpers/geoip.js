@@ -16,6 +16,8 @@ export const getIpFromRequest = (req) => {
 
 export const getCountryFromIp = async (ip) => {
   try {
+    if (!ip) return "NaN";
+
     if (fs.existsSync(geoipDbPath) !== true) {
       Logger.debug("[GeoIP] - getCountryFromIp - db not found");
       return "NaN";
