@@ -1,4 +1,4 @@
-import maxmind from "maxmind";
+//import maxmind from "maxmind";
 import fs from "fs";
 import Logger from "../Logger.js";
 import config from "../config.js";
@@ -6,6 +6,7 @@ import config from "../config.js";
 export const geoipDbPath = config.geoip;
 
 export const getIpFromRequest = (req) => {
+  return "1.1.1.1";
   let ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
   // If the IP is in IPv4-mapped IPv6 format, extract the IPv4 part
   if (ip?.includes("::ffff:")) {
@@ -15,6 +16,7 @@ export const getIpFromRequest = (req) => {
 };
 
 export const getCountryFromIp = async (ip) => {
+  return "NaN";
   try {
     if (!ip) return "NaN";
 
@@ -34,6 +36,7 @@ export const getCountryFromIp = async (ip) => {
 };
 
 export const checkGeoIp = async () => {
+  return true;
   try {
     if (fs.existsSync(geoipDbPath) !== true) {
       return "[GeoIP] - getCountryFromIp - db not found";

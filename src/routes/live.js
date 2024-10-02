@@ -60,7 +60,7 @@ router.all("*.m3u8", async (req, res, _next) => {
     }
 
     // inject pre-roll
-    //todo: find existing preroll key based on userdata
+    /*
     const streamName = playlistPath?.split("/")?.at(1);
     const prerollKey = await getPrerollKey(streamName, req);
     const prerollFile = `preroll-${prerollKey}.m4s`;
@@ -77,6 +77,7 @@ router.all("*.m3u8", async (req, res, _next) => {
       // #EXTINF:${prerollDuration}\r\n
     }
     // [end] inject pre-roll
+    */
 
     res.header(
       "Cache-Control",
