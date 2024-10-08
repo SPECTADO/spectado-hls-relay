@@ -32,7 +32,6 @@ mime.define({ "application/vnd.apple.mpegurl": ["m3u8"] });
 
 router.all("*.m3u8", async (req, res, _next) => {
   const playlistPath = req.params[0];
-  //const streamName = playlistPath?.split("/")?.at(1);
   const ct = config.hls.hlsTime || 5;
 
   const filename = `${config.hls.root}${playlistPath}.m3u8`;
@@ -60,7 +59,6 @@ router.all("*.m3u8", async (req, res, _next) => {
     }
 
     // inject pre-roll
-    /*
     const streamName = playlistPath?.split("/")?.at(1);
     const prerollKey = await getPrerollKey(streamName, req);
     const prerollFile = `preroll-${prerollKey}.m4s`;
@@ -77,7 +75,6 @@ router.all("*.m3u8", async (req, res, _next) => {
       // #EXTINF:${prerollDuration}\r\n
     }
     // [end] inject pre-roll
-    */
 
     res.header(
       "Cache-Control",

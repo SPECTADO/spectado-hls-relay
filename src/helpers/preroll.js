@@ -1,7 +1,7 @@
 import { globSync } from "glob";
 import config from "../config.js";
 import Logger from "../Logger.js";
-import { getCountryFromIp, getIpFromRequest } from "./geoip.js";
+import { getCountryFromRequest } from "./geoip.js";
 
 const getAllowedPrerollKeys = (streamName) => {
   const rootDir = config.hls.root;
@@ -19,11 +19,9 @@ const getAllowedPrerollKeys = (streamName) => {
 export const getPrerollKey = async (streamName, req) => {
   const allowedPrerollKeys = getAllowedPrerollKeys(streamName);
 
-  const ip = getIpFromRequest(req);
-
-  const country = await getCountryFromIp(ip);
+  const country = await getCountryFromRequest(req);
   const fsProject = req.query.fs_project;
-  //Logger.debug("getPrerollKey", { country, fsProject, ip, allowedPrerollKeys });
+  //Logger.debug("getPrerollKey", { country, fsProject, allowedPrerollKeys });
 
   if (
     config.allowedProjects &&
