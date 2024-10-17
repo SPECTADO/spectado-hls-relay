@@ -84,6 +84,7 @@ router.all("*.m3u8", async (req, res, _next) => {
     );
     //res.header("Content-Type", 'application/vnd.apple.mpegurl; charset=""');
 
+    res.header("Content-Type", "audio/mpegurl");
     res.status(200).send(playlistWithQueryParams);
   });
 });
