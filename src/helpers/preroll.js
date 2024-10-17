@@ -16,11 +16,10 @@ const getAllowedPrerollKeys = (streamName) => {
   return [];
 };
 
-export const getPrerollKey = async (streamName, req) => {
+export const getPrerollKey = async (streamName, fsProject, req) => {
   const allowedPrerollKeys = getAllowedPrerollKeys(streamName);
 
   const country = await getCountryFromRequest(req);
-  const fsProject = req.query.fs_project;
   //Logger.debug("getPrerollKey", { country, fsProject, allowedPrerollKeys });
 
   if (

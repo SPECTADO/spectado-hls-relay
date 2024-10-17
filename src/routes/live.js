@@ -31,7 +31,9 @@ mime.define({ "application/vnd.apple.mpegurl": ["m3u8"] });
 //router.all("/:streamId/init.mp4", (req, _res, next) => { const streamId = req.params?.streamId; Logger.debug(`New listener of stream '${streamId}'`); next(); });
 
 router.all("*.m3u8", async (req, res, _next) => {
-  const playlistPath = req.params[0];
+  const playlistPathArr = (req.params[0] || "").split("~") || ["", ""];
+  const playlistPath = playlistPathArr[0];
+  const playlistFsProject = playlistPathArr[1] || req.query.fs_project;
   const ct = config.hls.hlsTime || 5;
 
   const filename = `${config.hls.root}${playlistPath}.m3u8`;
@@ -51,16 +53,16 @@ router.all("*.m3u8", async (req, res, _next) => {
 
     let playlistWithQueryParams = playlistData;
 
-    if (req.query?.fs_project) {
+    if (playlistFsProject) {
       playlistWithQueryParams = playlistWithQueryParams.replaceAll(
         ".m4s",
-        `.m4s?fs_project=${req.query.fs_project}`
+        `.m4s?fs_project=${playlistFsProject}`
       );
     }
 
     // inject pre-roll
     const streamName = playlistPath?.split("/")?.at(1);
-    const prerollKey = await getPrerollKey(streamName, req);
+    const prerollKey = await getPrerollKey(streamName, playlistFsProject, req);
     const prerollFile = `preroll-${prerollKey}.m4s`;
     //const prerollDuration = 4;
     const hasPreroll = prerollKey ? true : false;
@@ -70,11 +72,22 @@ router.all("*.m3u8", async (req, res, _next) => {
     if (hasPreroll) {
       playlistWithQueryParams = playlistWithQueryParams.replace(
         '#EXT-X-MAP:URI="init.mp4"',
-        `#EXT-X-MAP:URI="init.mp4"\r\n#EXTINF:6,\r\n${prerollFile}\r\n#EXT-X-DISCONTINUITY`
+        `#EXT-X-MAP:URI="init.mp4"\r\n#EXT-X-DISCONTINUITY\r\n#EXTINF:6,\r\n${prerollFile}\r\n#EXT-X-DISCONTINUITY`
       );
       // #EXTINF:${prerollDuration}\r\n
     }
     // [end] inject pre-roll
+
+    Logger.debug("[M3U8]", {
+      playlistPathArr,
+      playlistPath,
+      playlistFsProject,
+      ct,
+      streamName,
+      prerollKey,
+      prerollFile,
+      hasPreroll,
+    });
 
     res.header(
       "Cache-Control",
@@ -82,9 +95,8 @@ router.all("*.m3u8", async (req, res, _next) => {
         ct / 2
       )},must-revalidate,proxy-revalidate,stale-while-revalidate`
     );
-    //res.header("Content-Type", 'application/vnd.apple.mpegurl; charset=""');
+    res.header("Content-Type", "application/vnd.apple.mpegurl");
 
-    res.header("Content-Type", "audio/mpegurl");
     res.status(200).send(playlistWithQueryParams);
   });
 });
