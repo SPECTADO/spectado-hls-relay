@@ -95,7 +95,7 @@ router.all("*.m3u8", async (req, res, _next) => {
         ct / 2
       )},must-revalidate,proxy-revalidate,stale-while-revalidate`
     );
-    res.header("Content-Type", "application/vnd.apple.mpegurl");
+    //res.header("Content-Type", "application/vnd.apple.mpegurl");
 
     res.status(200).send(playlistWithQueryParams);
   });
