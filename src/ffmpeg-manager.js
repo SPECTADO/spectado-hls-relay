@@ -143,11 +143,55 @@ class FfmpegManager {
             prerollFile
           );
 
-          spawn(config.ffmpeg, argv_spot);
+          const preroll_ffmpeg_exec = spawn(config.ffmpeg, argv_spot);
           Logger.debug(
             `Creating pre-roll spot for stream "${this.config.id}" - "${prerollKey}".`
           );
           Logger.ffdebug(config.ffmpeg, argv_spot.join(" "));
+
+          preroll_ffmpeg_exec.on("error", (e) => {
+            Logger.error(e);
+          });
+
+          preroll_ffmpeg_exec.stderr.on("data", (data) => {
+            Logger.ffdebug(`[${this.config.id} - "${prerollKey}"] - ${data}`);
+          });
+
+          preroll_ffmpeg_exec.on("close", (code) => {
+            Logger.info(
+              `Transmuxing pre-roll "${this.config.id}" - "${prerollKey}" ended (code ${code}).`
+            );
+
+            // check the m3u8 file for #EXT-X-TARGETDURATION:0 and if so, remove the preroll files
+            const prerollPlaylistPath = `${hlsPath}/preroll-${prerollKey}.m3u8`;
+            const prerollAudioFilePath = `${hlsPath}/preroll-${prerollKey}.m4s`;
+            fs.readFile(prerollPlaylistPath, "utf8", (err, data) => {
+              if (err) {
+                Logger.error(err);
+                return;
+              }
+              if (data.includes("#EXT-X-TARGETDURATION:0")) {
+                fs.unlink(prerollPlaylistPath, (err) => {
+                  if (err) {
+                    Logger.error(err);
+                    return;
+                  }
+                  Logger.warn(
+                    `Removed pre-roll playlist file "${prerollPlaylistPath}"`
+                  );
+                });
+                fs.unlink(prerollAudioFilePath, (err) => {
+                  if (err) {
+                    Logger.error(err);
+                    return;
+                  }
+                  Logger.warn(
+                    `Removed pre-roll audio file "${prerollAudioFilePath}"`
+                  );
+                });
+              }
+            });
+          });
         });
       }
     }
