@@ -5,6 +5,8 @@ import config from "../config.js";
 import Logger from "../Logger.js";
 import cluster from "cluster";
 import { getPrerollKey } from "../helpers/preroll.js";
+import dayjs from "dayjs";
+import { pid } from "process";
 const router = express.Router();
 
 let listenersStack = [];
@@ -116,8 +118,28 @@ router.all("*.m4s", (req, res, next) => {
       },
     };
     listenersStack.push(listenerObject);
-    //Logger.debug(req.params, req.query, streamName, listenerObject);
-  } catch {}
+
+    const filename = req.params[0]?.replace(`/${streamName}/`, "");
+    //Logger.debug("[FILE]", {params: req.params,query: req.query,streamName,filename});
+
+    // count pre-roll injection...
+    if (filename && filename.startsWith("preroll-")) {
+      // http://localhost:8080/live/xx-test1/preroll-all.m4s
+
+      // log to file on disk...
+      fs.appendFile(
+        `${config.hls.root}/_logs/preroll.${dayjs().format(
+          "YYYY-MM-DD-HH"
+        )}-${pid}.txt`,
+        `${dayjs().format()};${streamName};${filename};\n`,
+        function (err) {
+          if (err) Logger.warn("[ERROR] Saving preroll stats", { err });
+        }
+      );
+    }
+  } catch (err) {
+    Logger.debug("[ERROR] Accessing media segment/preroll file", { err });
+  }
 
   res.header(
     "Cache-Control",

@@ -1,6 +1,6 @@
 {
   "name": "spectado-hls-relay",
-  "version": "1.5.8",
+  "version": "1.5.10",
   "description": "Simple HLS audio relay server",
   "license": "MIT",
   "author": "SPECTADO, s.r.o.",

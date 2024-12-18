@@ -1,5 +1,6 @@
 import express from "express";
 //import crypto from "crypto";
+import mkdirp from "mkdirp";
 import cluster from "cluster";
 import http from "http";
 import https from "https";
@@ -111,6 +112,9 @@ if (cluster.isPrimary) {
   Logger.log(
     `Audio Normalization is ${config.codec.normalize ? "enabled" : "disabled"}`
   );
+
+  // init LOGS folder
+  mkdirp.sync(`${config.hls.root}/_logs`);
 
   // Fork workers.
   for (var i = 0; i < workerCount; i++) {

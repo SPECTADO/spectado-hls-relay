@@ -6,6 +6,7 @@
 - experimental pre-roll GEO restrictions
 - new env variables - SHLS_ALLOWED_PROJECTS & SHLS_GEOIP
 - handling of incompatible pre-roll spot file (duration=0)
+- pre-roll stats
 
 ## 1.4
 

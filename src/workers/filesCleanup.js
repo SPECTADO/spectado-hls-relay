@@ -21,31 +21,37 @@ const scanAndClean = () => {
       return false;
     }
 
-    dirs.forEach((dir) => {
+    dirs.forEach((currDir) => {
+      if (currDir === "_logs") return;
+
       try {
-        const isValidSession = validsessions.includes(dir);
+        const isValidSession = validsessions.includes(currDir);
         if (!isValidSession) {
           // invalid session directory, check if the playlist wasn't modified in the last x minitues...
-          const playlistFile = fs.statSync(`${mediaRoot}/${dir}/playlist.m3u8`);
+          const playlistFile = fs.statSync(
+            `${mediaRoot}/${currDir}/playlist.m3u8`
+          );
           if (now - playlistFile.mtime > fileLifetimeStale * 60 * 1000) {
-            Logger.info(`Found invalid and stale session directory "${dir}"`);
+            Logger.info(
+              `Found invalid and stale session directory "${currDir}"`
+            );
 
             try {
-              fs.rmSync(`${mediaRoot}/${dir}`, {
+              fs.rmSync(`${mediaRoot}/${currDir}`, {
                 recursive: true,
                 force: true,
               });
             } catch (e) {
-              Logger.warn(`Unable to delete session directory "${dir}"`);
+              Logger.warn(`Unable to delete session directory "${currDir}"`);
               Logger.debug(e);
             }
           }
         }
       } catch {
         // no playlist in the directory, dedelete it
-        Logger.warn(`Invalid session directory found "${dir}"`);
+        Logger.warn(`Invalid session directory found "${currDir}"`);
         try {
-          fs.rmSync(`${mediaRoot}/${dir}`, {
+          fs.rmSync(`${mediaRoot}/${currDir}`, {
             recursive: true,
             force: true,
           });
