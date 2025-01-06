@@ -118,7 +118,7 @@ const pushStats = () => {
 
     setInterval(() => {
       doPushPrerollStats();
-    }, (config.stats.interval + 30) * 1000);
+    }, config.stats.interval * 1000 + 5000);
   }
 };
 export default pushStats;
