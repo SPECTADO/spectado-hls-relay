@@ -4,8 +4,10 @@ import Logger from "./Logger.js";
 import config from "./config.js";
 import mkdirp from "mkdirp";
 import fs from "fs";
+import generateServerId from "./helpers/serverUuid.js";
 
 const watchdogInterval = 10000;
+const machineId = generateServerId();
 
 /**
  * config object
@@ -229,6 +231,23 @@ class FfmpegManager {
         this.handleHangedFfmpeg.bind(this),
         watchdogInterval
       );
+    });
+
+    this.ffmpeg_exec.stderr.on("data", (data) => {
+      const output = data.toString();
+      if (output.includes("Opening")) {
+        const match = output.match(/Opening '(.+?)'/);
+        if (match && (match[1].endsWith(".m4s") || match[1].endsWith(".mp4"))) {
+          const cdnUploader = this.config.cdnUploader;
+          const filepath = match[1];
+          const streamId = this.config.id;
+
+          if (cdnUploader === machineId) {
+            Logger.debug(`[HLS segment] ${streamId} - ${filepath}`);
+            // TODO: push to CDN...
+          }
+        }
+      }
     });
 
     this.ffmpeg_exec.on("close", (code) => {

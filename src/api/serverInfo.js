@@ -3,6 +3,7 @@ import cluster from "cluster";
 // import config from "../config.js";
 import si from "systeminformation";
 import { readFile } from "fs/promises";
+import generateServerId from "../helpers/serverUuid.js";
 import Logger from "../Logger.js";
 
 const json = JSON.parse(
@@ -113,6 +114,8 @@ const serverInfo = () => {
   return {
     server: json.name,
     version: json.version,
+    pid: process.pid,
+    machineId: generateServerId(),
     load: netLoad || 0,
     listeners: countListeners || 0,
     memory: { free: os.freemem(), total: os.totalmem() },
