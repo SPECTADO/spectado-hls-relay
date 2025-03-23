@@ -100,5 +100,7 @@ export const pushFileToCloudflareR2 = (streamId, sourceFile) => {
 
     // End the request
     req.end();
+
+    resolve();
   });
 };
