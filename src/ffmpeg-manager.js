@@ -5,6 +5,7 @@ import config from "./config.js";
 import mkdirp from "mkdirp";
 import fs from "fs";
 import generateServerId from "./helpers/serverUuid.js";
+import { pushFileToCloudflareR2 } from "./helpers/cloudflareR2.js";
 
 const watchdogInterval = 10000;
 const machineId = generateServerId();
@@ -245,6 +246,14 @@ class FfmpegManager {
           if (cdnUploader === machineId) {
             Logger.debug(`[HLS segment] ${streamId} - ${filepath}`);
             // TODO: push to CDN...
+            pushFileToCloudflareR2(streamId, filepath);
+            if (filepath.endsWith(".m4s")) {
+              const updatedFilepath = filepath.replace(
+                /segment-\d+\.m4s$/,
+                "playlist.m3u8"
+              );
+              pushFileToCloudflareR2(streamId, updatedFilepath);
+            }
           }
         }
       }
