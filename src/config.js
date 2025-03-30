@@ -30,7 +30,15 @@ const config = {
   hls: {
     root: env.SHLS_MEDIAROOT || "/tmp/hls",
     hlsTime: 6,
-    hlsListSize: 2,
+    hlsListSize: 3,
+  },
+
+  cdn: {
+    enabled: env.SHLS_CDN === "true" ? true : false,
+    endpoint: env.SHLS_CDN_ENDPOINT || null,
+    accessKeyId: env.SHLS_CDN_ACCESS_KEY_ID || null,
+    secretAccessKey: env.SHLS_CDN_SECRET_ACCESS_KEY || null,
+    bucketName: env.SHLS_CDN_BUCKET || null,
   },
 
   stats: {

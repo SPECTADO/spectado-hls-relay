@@ -1,5 +1,9 @@
 # HLS Relay server
 
+## 1.6.1
+
+- experimental CDN upload
+
 ## 1.5
 
 - experimental pre-roll support

@@ -8,6 +8,7 @@ import generateServerId from "./helpers/serverUuid.js";
 import { pushFileToCloudflareR2 } from "./helpers/cloudflareR2.js";
 
 const watchdogInterval = 10000;
+const segmentMinPlaces = 4;
 const machineId = generateServerId();
 
 /**
@@ -24,6 +25,7 @@ class FfmpegManager {
     this.started = new Date();
     this.config = config;
     this.watchdog = null;
+    this.hlsInitUploaded = false;
   }
 
   creatFfmpegConfig(hlsPath) {
@@ -68,7 +70,7 @@ class FfmpegManager {
     argv.push("-hls_list_size");
     argv.push(config.hls.hlsListSize);
     argv.push("-hls_segment_filename");
-    argv.push(`${hlsPath}/segment-%4d.m4s`);
+    argv.push(`${hlsPath}/segment-%${segmentMinPlaces}d.m4s`);
     //argv.push("-lhls");argv.push("1");
     argv.push("-hls_flags");
     argv.push(
@@ -234,26 +236,46 @@ class FfmpegManager {
       );
     });
 
-    this.ffmpeg_exec.stderr.on("data", (data) => {
+    this.ffmpeg_exec.stderr.on("data", async (data) => {
       const output = data.toString();
+      //Logger.debug("-------", output);
+
       if (output.includes("Opening")) {
         const match = output.match(/Opening '(.+?)'/);
-        if (match && (match[1].endsWith(".m4s") || match[1].endsWith(".mp4"))) {
+        if (match && match[1].endsWith(".m4s")) {
           const cdnUploader = this.config.cdnUploader;
-          const filepath = match[1];
+          let filepath = match[1];
+          filepath = filepath.replace(/segment-(\d+)\.m4s$/, (_, num) => {
+            const newNum = String(num - 1).padStart(segmentMinPlaces, "0");
+            return `segment-${newNum}.m4s`;
+          });
+
           const streamId = this.config.id;
 
           if (cdnUploader === machineId) {
-            Logger.debug(`[HLS segment] ${streamId} - ${filepath}`);
-            // TODO: push to CDN...
-            pushFileToCloudflareR2(streamId, filepath);
+            //Logger.debug(`[HLS segment] ${streamId} - ${filepath}`);
+
+            if (this.hlsInitUploaded !== true) {
+              const filepathInit = filepath.replace(
+                /segment-\d+\.m4s$/,
+                "init.mp4"
+              );
+              const success = await pushFileToCloudflareR2(
+                streamId,
+                filepathInit
+              );
+              if (success) this.hlsInitUploaded = true;
+            }
+
             if (filepath.endsWith(".m4s")) {
-              const updatedFilepath = filepath.replace(
+              const filepathPlaylist = filepath.replace(
                 /segment-\d+\.m4s$/,
                 "playlist.m3u8"
               );
-              pushFileToCloudflareR2(streamId, updatedFilepath);
+              await pushFileToCloudflareR2(streamId, filepathPlaylist);
             }
+
+            await pushFileToCloudflareR2(streamId, filepath);
           }
         }
       }
