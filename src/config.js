@@ -34,7 +34,7 @@ const config = {
   },
 
   cdn: {
-    enabled: env.SHLS_CDN === "true" ? true : false,
+    enabled: false, //env.SHLS_CDN === "true" ? true : false,
     endpoint: env.SHLS_CDN_ENDPOINT || null,
     accessKeyId: env.SHLS_CDN_ACCESS_KEY_ID || null,
     secretAccessKey: env.SHLS_CDN_SECRET_ACCESS_KEY || null,
